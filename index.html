@@ -794,12 +794,15 @@ function start(){
   scopeKey=document.getElementById('scope').value;
   answers={};hasResults=false;buildItems();
   document.getElementById('intro').classList.add('hidden');
-  document.getElementById('hero').classList.add('hidden');
+  const hero = document.getElementById('hero');
+if (hero) {
+    hero.classList.add('hidden');
+}
   document.getElementById('results').classList.add('hidden');
   document.getElementById('quiz').classList.remove('hidden');
   renderQuestions();updateProgress();window.scrollTo({top:0,behavior:'smooth'});
 }
-function backToIntro(){document.getElementById('quiz').classList.add('hidden');document.getElementById('intro').classList.remove('hidden');document.getElementById('hero').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
+function backToIntro(){document.getElementById('quiz').classList.add('hidden');document.getElementById('intro').classList.remove('hidden');const hero = document.getElementById('hero'); if (hero) {     hero.classList.remove('hidden'); }window.scrollTo({top:0,behavior:'smooth'});}
 function industryLabel(){const i=INDUSTRIES.en.indexOf(industryKey);return INDUSTRIES[LANG][i>=0?i:0];}
 function scopeLabel(){const i=SCOPES.en.indexOf(scopeKey);return SCOPES[LANG][i>=0?i:0];}
 function pillarLabel(pi){return PILLARS[LANG][pi];}
@@ -854,7 +857,7 @@ function showResults(keepScroll){
   USECASES[LANG][industryKey].forEach(x=>{const s=document.createElement('span');s.textContent=x;uc.appendChild(s);});
   if(!keepScroll)window.scrollTo({top:0,behavior:'smooth'});
 }
-function restart(){hasResults=false;document.getElementById('results').classList.add('hidden');document.getElementById('intro').classList.remove('hidden');document.getElementById('hero').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
+function restart(){hasResults=false;document.getElementById('results').classList.add('hidden');document.getElementById('intro').classList.remove('hidden');const hero = document.getElementById('hero'); if (hero) {     hero.classList.remove('hidden'); }window.scrollTo({top:0,behavior:'smooth'});}
 
 /* ================= INIT ================= */
 applyStaticText();rebuildIndustryDropdown();rebuildScopeDropdown();
