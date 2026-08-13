@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMU Academy · SME AI Readiness Self-Assessment | 新加坡管理大学中小企业人工智能准备度自评</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --navy:#1C2A5E; --navy2:#1F3864; --blue:#2E5496; --lt:#EAF0FA; --lt2:#F5F8FD; --grey:#808080;
+    --gold:#9A7B3F; --green:#2E9E5B; --lgreen:#7DBB4F; --yellow:#E8B800; --orange:#E67E22; --red:#D64545;
+    --goldbg:#FFF2CC; --cta:#0B7A75;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI','Microsoft YaHei','PingFang SC',Calibri,Arial,sans-serif;color:#222;background:#eef2f8;line-height:1.55}
+  .wrap{max-width:920px;margin:0 auto;padding:0 16px 60px}
+  header.top{background:#fff;border-bottom:3px solid var(--navy);padding:14px 0}
+  header.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:16px}
+  .logobox{flex:0 0 auto}
+  .logobox img{display:block}
+  .brandtext h1{font-size:20px;color:var(--navy);line-height:1.2}
+  .brandtext p{color:var(--grey);font-size:12.5px;margin-top:3px}
+  .langtoggle{display:flex;border:1.5px solid var(--navy);border-radius:99px;overflow:hidden}
+  .langtoggle button{background:#fff;color:var(--navy);border:none;padding:7px 16px;cursor:pointer;font-size:14px;font-weight:600}
+  .langtoggle button.active{background:var(--navy);color:#fff}
+  .card{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(28,42,94,.09);padding:26px;margin-top:22px}
+  h2{color:var(--navy);font-size:20px;margin-bottom:6px}
+  .sub{color:var(--grey);font-size:14px;margin-bottom:16px}
+  .objective{background:var(--lt);border-left:5px solid var(--gold);border-radius:10px;padding:16px 18px;margin:6px 0 18px}
+  .objective h3{color:var(--navy);font-size:16px;margin-bottom:6px}
+  .objective p{font-size:14px}
+  .pill{display:inline-block;background:var(--lt);color:var(--navy);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;margin:2px}
+  .btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:12px 22px;font-size:15px;font-weight:600;cursor:pointer;transition:.15s}
+  .btn:hover{background:var(--navy)}
+  .btn.ghost{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+  .btn.ghost:hover{background:var(--lt)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn.save{background:var(--gold)}
+  .btn.save:hover{background:#7d6330}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .between{justify-content:space-between}
+  select,input[type=text]{padding:11px 12px;border:1.5px solid #cbd6ea;border-radius:9px;font-size:15px;min-width:230px;font-family:inherit}
+  .field{display:flex;gap:12px;align-items:center;margin-top:8px;flex-wrap:wrap}
+  .field label{font-weight:600;color:var(--navy);min-width:150px}
+  .progress{height:9px;background:#e3e9f4;border-radius:99px;overflow:hidden;margin:14px 0 4px}
+  .progress > div{height:100%;background:linear-gradient(90deg,var(--gold),var(--navy));width:0;transition:.3s}
+  .qcard{border:1px solid #e6ebf5;border-radius:12px;padding:16px 16px 8px;margin-bottom:14px;background:var(--lt2)}
+  .qcard.industry{background:var(--goldbg);border-color:#ecd9a0}
+  .qtext{font-weight:600;margin-bottom:2px}
+  .qhelp{color:var(--grey);font-size:13px;margin-bottom:10px}
+  .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .opt{flex:1;min-width:120px;border:1.5px solid #cbd6ea;background:#fff;border-radius:9px;padding:9px 8px;text-align:center;cursor:pointer;font-size:12.5px;transition:.12s;user-select:none}
+  .opt small{display:block;color:var(--grey);font-size:11px;margin-top:2px}
+  .opt:hover{border-color:var(--blue)}
+  .opt.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .opt.sel small{color:#dbe6fb}
+  .pillar-head{color:var(--navy);font-weight:700;font-size:15px;margin:18px 0 10px;border-left:4px solid var(--gold);padding-left:10px}
+  .gauge-wrap{display:flex;gap:26px;flex-wrap:wrap;align-items:center;justify-content:center}
+  .gauge{position:relative;width:170px;height:170px}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .gauge .center .num{font-size:38px;font-weight:800;color:var(--navy);line-height:1}
+  .gauge .center .stg{font-weight:700;margin-top:4px}
+  .ladder{flex:1;min-width:260px}
+  .ladder .step{display:flex;justify-content:space-between;padding:8px 12px;border-radius:8px;background:var(--lt);margin-bottom:6px;font-size:14px}
+  .ladder .step.active{background:var(--navy);color:#fff;font-weight:700}
+  .barrow{display:grid;grid-template-columns:1.2fr 2fr auto;gap:10px;align-items:center;margin-bottom:9px;font-size:13px}
+  .bar{height:16px;background:#e9ecf2;border-radius:8px;overflow:hidden}
+  .bar > div{height:100%;border-radius:8px;transition:.4s}
+  .prio{display:flex;gap:12px;padding:14px;border-radius:12px;background:var(--lt2);margin-bottom:12px;border:1px solid #e6ebf5}
+  .prio .n{flex:0 0 34px;height:34px;border-radius:50%;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .prio .txt b{color:var(--navy)}
+  .prio .txt p{font-size:13.5px;margin-top:3px}
+  .usecases{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .usecases span{background:var(--lt);color:var(--navy);border-radius:8px;padding:6px 10px;font-size:12.5px}
+  .savebox{background:var(--goldbg);border:1px solid #ecd9a0;border-radius:12px;padding:16px 18px;margin-top:22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+  .savebox .txt b{color:var(--navy);font-size:15px}
+  .savebox .txt p{color:#6b5a2e;font-size:13px;margin-top:2px}
+  .ctabox{background:linear-gradient(135deg,#0B7A75,#123f6b);color:#fff;border-radius:14px;padding:24px;margin-top:24px}
+  .ctabox h3{font-size:19px;margin-bottom:6px}
+  .ctabox p{color:#d7f0ee;font-size:14px;margin-bottom:14px}
+  .ctagrid{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .ctagrid .item{flex:1;min-width:170px;background:rgba(255,255,255,.12);border-radius:10px;padding:12px 14px}
+  .ctagrid .item b{display:block;font-size:14.5px;margin-bottom:3px}
+  .ctagrid .item span{font-size:12.5px;color:#eaf6f4}
+  .btn.ctawhite{background:#fff;color:var(--cta)}
+  .btn.ctawhite:hover{background:#e9fffb}
+  .footer-note{color:var(--grey);font-size:12.5px;margin-top:18px;border-top:1px dashed #ccd6ea;padding-top:12px}
+  .devclause{background:var(--lt2);border:1px dashed #b9c8e6;border-radius:10px;padding:14px;font-size:12.5px;color:#3a4a70;margin-top:16px;display:flex;gap:14px;align-items:center}
+  .devclause .logomini{flex:0 0 auto}
+  .devclause .logomini img{display:block}
+  .hidden{display:none}
+  @media print{
+    header.top .langtoggle,.noprint{display:none!important}
+    body{background:#fff}
+    .card{box-shadow:none;page-break-inside:avoid}
+    .ctabox{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .savebox{display:none!important}
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <span class="logobox" id="logoHeader"></span>
+      <div class="brandtext">
+        <h1 id="appTitle">SME AI Readiness Self-Assessment</h1>
+        <p id="appSubtitle">Developed by SMU Academy · Vendor-neutral · ~15 minutes</p>
+      </div>
+    </div>
+    <div class="langtoggle">
+      <button id="btnEN" class="active" onclick="setLang('en')">EN</button>
+      <button id="btnZH" onclick="setLang('zh')">中文</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- INTRO -->
+  <div class="card" id="intro">
+    <h2 id="introH"></h2>
+    <div class="objective">
+      <h3 id="objH"></h3>
+      <p id="objP"></p>
+    </div>
+    <p class="sub" id="introSub"></p>
+    <div id="introPills" style="margin:10px 0 16px"></div>
+    <div class="field">
+      <label id="lblIndustry"></label>
+      <select id="industry"></select>
+    </div>
+    <div class="field">
+      <label id="lblScope"></label>
+      <select id="scope"></select>
+    </div>
+    <div class="field">
+      <label id="lblCompany"></label>
+      <input type="text" id="company">
+    </div>
+    <div class="row" style="margin-top:20px">
+      <button class="btn" id="btnStart" onclick="start()"></button>
+    </div>
+    <div class="devclause">
+      <span class="logomini" id="logoClause"></span>
+      <span id="devClauseText"></span>
+    </div>
+    <p class="footer-note" id="introFoot"></p>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="card hidden" id="quiz">
+    <div class="row between">
+      <h2 id="quizTitle"></h2>
+      <span class="pill" id="counter"></span>
+    </div>
+    <div class="progress"><div id="pbar"></div></div>
+    <div id="questions"></div>
+    <div class="row between" style="margin-top:16px">
+      <button class="btn ghost" id="btnBack" onclick="backToIntro()"></button>
+      <button class="btn" id="seeResults" onclick="showResults()" disabled></button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="card hidden" id="results">
+    <div class="row between">
+      <div>
+        <h2 id="resTitle"></h2>
+        <p class="sub" id="resSub"></p>
+      </div>
+      <div class="noprint row">
+        <button class="btn ghost" id="btnRetake" onclick="restart()"></button>
+        <button class="btn" id="btnPrint" onclick="window.print()"></button>
+      </div>
+    </div>
+
+    <div class="gauge-wrap" style="margin:10px 0 24px">
+      <div class="gauge">
+        <svg width="170" height="170">
+          <circle cx="85" cy="85" r="72" stroke="#e9ecf2" stroke-width="14" fill="none"/>
+          <circle id="gaugeArc" cx="85" cy="85" r="72" stroke="#2E5496" stroke-width="14" fill="none"
+                  stroke-linecap="round" stroke-dasharray="452" stroke-dashoffset="452"/>
+        </svg>
+        <div class="center"><div class="num" id="ovNum">0%</div><div class="stg" id="ovStage">—</div>
+          <small style="color:var(--grey)" id="ovLbl"></small></div>
+      </div>
+      <div class="ladder" id="ladder"></div>
+    </div>
+
+    <div class="row" style="gap:30px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:1;min-width:300px">
+        <h2 style="font-size:17px" id="barsH"></h2>
+        <div id="bars" style="margin-top:12px"></div>
+      </div>
+      <div style="flex:1;min-width:300px">
+        <h2 style="font-size:17px" id="radarH"></h2>
+        <canvas id="radar" height="260"></canvas>
+      </div>
+    </div>
+
+    <h2 style="font-size:17px;margin-top:24px" id="prioH"></h2>
+    <p class="sub" id="prioSub"></p>
+    <div id="priorities"></div>
+
+    <h2 style="font-size:17px;margin-top:14px" id="ucH"></h2>
+    <div class="usecases" id="usecases"></div>
+
+    <!-- SAVE / SUBMIT TO SMUA -->
+    <div class="savebox" id="savebox">
+      <div class="txt">
+        <b id="saveTitle"></b>
+        <p id="saveHint"></p>
+      </div>
+      <button class="btn save" id="saveBtn" onclick="submitToSMUA()"></button>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="ctabox">
+      <h3 id="ctaH"></h3>
+      <p id="ctaP"></p>
+      <div class="ctagrid" id="ctaGrid"></div>
+      <div class="row">
+        <button class="btn ctawhite" id="ctaBtn1" onclick="ctaClick()"></button>
+        <button class="btn ctawhite" id="ctaBtn2" onclick="ctaClick()"></button>
+      </div>
+    </div>
+
+    <p class="footer-note" id="resFoot"></p>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   SMU ACADEMY LOGO — paste your official logo (URL or base64) below.
+   ===================================================================== */
+const LOGO_SRC = "PASTE_LOGO_URL_OR_BASE64_HERE";
+
+function smuaLogo(h){
+  if(LOGO_SRC && LOGO_SRC.indexOf("PASTE_")!==0){
+    return '<img src="'+LOGO_SRC+'" style="height:'+h+'px;width:auto;display:block" '
+         + 'alt="SMU Academy — Singapore Management University">';
+  }
+  return '<div style="display:flex;flex-direction:column;justify-content:center;height:'+h+'px;'
+       + 'font-family:Georgia,serif;color:#1C2A5E;line-height:1.05">'
+       + '<span style="font-size:'+Math.round(h*0.34)+'px;font-weight:700;letter-spacing:1px">SMU</span>'
+       + '<span style="font-size:'+Math.round(h*0.16)+'px;letter-spacing:.5px">Academy</span>'
+       + '</div>';
+}
+
+/* =====================================================================
+   CONTACT / BOOKING LINK (workshop / consultancy enquiries)
+   ===================================================================== */
+const CTA_LINK = "mailto:academy@smu.edu.sg?subject=SME%20AI%20Readiness%20-%20Workshop%2FConsultancy%20Enquiry";
+
+/* =====================================================================
+   MICROSOFT FORM URL — for official capture into SharePoint Excel.
+   Tokens the tool will substitute if present:
+     %%COMPANY%%   -> entered company name
+     %%SCOPE%%     -> selected scope (Overall Company / department)
+   ===================================================================== */
+const FORM_URL = "PASTE_YOUR_MICROSOFT_FORM_LINK_HERE";
+
+/* ================= LANGUAGE ================= */
+let LANG='en';
+
+/* Scope options (canonical EN keys) */
+const SCOPES = {
+ en:["Overall Company","Sales","Marketing","Operations","Finance","Human Resources","IT / Technology","Customer Service","Procurement / Supply Chain","Other"],
+ zh:["整体公司","销售","市场营销","运营","财务","人力资源","IT / 技术","客户服务","采购 / 供应链","其他"]
+};
+const SCOPE_KEY = {};
+SCOPES.en.forEach((e,i)=>{ SCOPE_KEY[e]=e; SCOPE_KEY[SCOPES.zh[i]]=e; });
+
+const T = {
+ en:{
+  appTitle:"SME AI Readiness Self-Assessment",
+  appSubtitle:"Developed by SMU Academy · Vendor-neutral · ~15 minutes",
+  introH:"How ready is your business for AI?",
+  objH:"About this tool",
+  objP:"This self-assessment helps SME leaders quickly understand their organisation's readiness to adopt AI across seven core areas plus industry-specific use cases. In about 15 minutes you'll receive a readiness score, a maturity stage, and a prioritised, practical action roadmap — so you know exactly where to start and how to move forward with confidence.",
+  introSub:"A quick diagnostic across 7 core pillars plus a use-case overlay for your industry. Nothing is uploaded — it runs entirely in your browser.",
+  lblIndustry:"Select your industry:",
+  lblScope:"Assessing for:",
+  lblCompany:"Company name (optional):",
+  companyPH:"e.g. Bloom & Co.",
+  btnStart:"Start Assessment →",
+  devClause:"This tool is developed by SMU Academy (SMUA) and will be enhanced from time to time as AI capabilities and SME needs evolve. Your feedback helps us improve it.",
+  introFoot:"Recommendations map to SG support (EDG · PSG · SFEC · SkillsFuture).",
+  quizTitle:"Assessment · ",
+  counter:(d,t)=>`${d} / ${t} answered`,
+  btnBack:"← Change details",
+  seeResults:"See my results →",
+  resTitle:"Your AI Readiness Results",
+  resSub:(ind,scope,date)=>`Industry: ${ind}  ·  Scope: ${scope}  ·  ${date}`,
+  btnRetake:"↺ Retake",
+  btnPrint:"🖨 Print / Save PDF",
+  ovLbl:"Overall Readiness",
+  youAreHere:"  ◀ you are here",
+  barsH:"Readiness by pillar",
+  radarH:"Readiness profile",
+  prioH:"Your top 3 priorities",
+  prioSub:"Focus here first — these are your lowest-scoring pillars.",
+  ucH:"Recommended use cases for your industry",
+  saveTitle:"Save your responses with SMU Academy",
+  saveHint:"Submit your answers so we can offer relevant follow-up support and resources.",
+  saveBtn:"📝 Submit my responses to SMUA",
+  ctaH:"Ready to take the next step with SMU Academy?",
+  ctaP:"Turn your results into action. SMU Academy partners with SMEs to build AI capability through hands-on workshops, tailored consultancy, and staff training — with pathways to relevant government funding.",
+  ctaItems:[
+    ["AI Workshops","Practical, hands-on sessions for your team to apply AI to real business tasks."],
+    ["Advisory & Consultancy","Tailored guidance to prioritise use cases and build your AI roadmap."],
+    ["Corporate Training","Upskill staff with structured, funding-eligible AI training programmes."]
+  ],
+  ctaBtn1:"Enquire about a Workshop",
+  ctaBtn2:"Request a Consultation",
+  resFoot:"This is a self-assessment guide, not professional advice. Developed by SMU Academy and enhanced from time to time. Recommendations map to SG support (EDG · PSG · SFEC · SkillsFuture).",
+  radarLabel:"Readiness %"
+ },
+ zh:{
+  appTitle:"中小企业人工智能准备度自评",
+  appSubtitle:"由新加坡管理大学（SMU Academy）开发 · 中立客观 · 约15分钟",
+  introH:"您的企业为人工智能做好准备了吗？",
+  objH:"关于本工具",
+  objP:"本自评工具帮助中小企业管理者快速了解企业在七大核心领域及行业专属应用场景上采用人工智能的准备程度。约15分钟内，您将获得准备度评分、成熟度阶段，以及一份分优先次序、切实可行的行动路线图——让您清楚知道从何入手，并有信心地向前推进。",
+  introSub:"快速评估七大核心支柱，并针对您所在行业提供应用场景补充问题。全程在浏览器内运行，不会上传任何数据。",
+  lblIndustry:"请选择您的行业：",
+  lblScope:"评估范围：",
+  lblCompany:"公司名称（选填）：",
+  companyPH:"例如：Bloom & Co.",
+  btnStart:"开始评估 →",
+  devClause:"本工具由新加坡管理大学（SMU Academy，简称SMUA）开发，并将随人工智能技术与中小企业需求的发展不时更新完善。欢迎您提供反馈，助我们不断改进。",
+  introFoot:"建议措施对接新加坡政府支持（EDG · PSG · SFEC · 技能创前程）。",
+  quizTitle:"评估 · ",
+  counter:(d,t)=>`已回答 ${d} / ${t}`,
+  btnBack:"← 更改信息",
+  seeResults:"查看我的结果 →",
+  resTitle:"您的人工智能准备度结果",
+  resSub:(ind,scope,date)=>`行业：${ind}  ·  范围：${scope}  ·  ${date}`,
+  btnRetake:"↺ 重新评估",
+  btnPrint:"🖨 打印 / 保存PDF",
+  ovLbl:"整体准备度",
+  youAreHere:"  ◀ 您在此",
+  barsH:"各支柱准备度",
+  radarH:"准备度概览",
+  prioH:"您的三大优先事项",
+  prioSub:"请优先处理这些——它们是您得分最低的支柱。",
+  ucH:"为您所在行业推荐的应用场景",
+  saveTitle:"将您的回复提交给新加坡管理大学",
+  saveHint:"提交您的回答，以便我们提供相关的后续支持与资源。",
+  saveBtn:"📝 将我的回复提交给新加坡管理大学",
+  ctaH:"准备好与新加坡管理大学一起迈出下一步了吗？",
+  ctaP:"将评估结果化为行动。新加坡管理大学（SMU Academy）与中小企业携手，通过实操工作坊、量身定制的咨询以及员工培训来建立人工智能能力，并协助对接相关政府资助。",
+  ctaItems:[
+    ["人工智能工作坊","实操性强的课程，让您的团队将AI应用于真实业务任务。"],
+    ["顾问与咨询","量身定制的指导，帮助确定应用场景优先次序并制定AI路线图。"],
+    ["企业培训","通过系统化、符合资助条件的AI培训项目提升员工技能。"]
+  ],
+  ctaBtn1:"咨询工作坊",
+  ctaBtn2:"预约咨询",
+  resFoot:"本工具为自我评估指南，并非专业咨询意见。由新加坡管理大学（SMU Academy）开发并不时更新完善。建议措施对接新加坡政府支持（EDG · PSG · SFEC · 技能创前程）。",
+  radarLabel:"准备度 %"
+ }
+};
+
+const INDUSTRIES = { en:["Retail","Finance","Logistics & Supply Chain"], zh:["零售","金融","物流与供应链"] };
+const IND_KEY = {"Retail":"Retail","Finance":"Finance","Logistics & Supply Chain":"Logistics & Supply Chain","零售":"Retail","金融":"Finance","物流与供应链":"Logistics & Supply Chain"};
+
+const PILLARS = {
+ en:["1. Business Case & Leadership","2. Use-Case Readiness","3. Data Readiness","4. People & Change Readiness","5. Tools & Adoption","6. Responsible AI & Compliance","7. Financial Readiness & Funding","8. Industry-Specific Use Cases"],
+ zh:["1. 商业价值与领导力","2. 应用场景准备度","3. 数据准备度","4. 人员与变革准备度","5. 工具与采用","6. 负责任AI与合规","7. 资金准备与政府资助","8. 行业专属应用场景"]
+};
+const STAGES = {
+ en:[["Exploring",0,20],["Planning",21,40],["Implementing",41,60],["Scaling",61,80],["Realizing",81,100]],
+ zh:[["探索期",0,20],["规划期",21,40],["实施期",41,60],["扩展期",61,80],["实现期",81,100]]
+};
+
+const CORE = [
+ [
+  ["We have identified specific business problems or goals AI could help address.","e.g. reduce manual admin, speed up customer response, forecast demand.","我们已明确人工智能可协助解决的具体业务问题或目标。","例如：减少人工行政、加快客户回应、预测需求。"],
+  ["Our owner/senior management actively supports exploring or adopting AI.","Leadership sponsorship is the #1 predictor of SME AI success.","我们的老板/高层积极支持探索或采用人工智能。","领导支持是中小企业AI成功的首要因素。"],
+  ["We have someone (even part-time) responsible for driving AI/digital initiatives.","A named champion, not necessarily a technical hire.","我们有专人（哪怕是兼职）负责推动AI/数字化举措。","一位明确的负责人，不一定是技术人员。"],
+  ["We understand how AI could give us a competitive advantage in our market.","Awareness of AI's strategic relevance to your sector.","我们了解AI如何在市场中带来竞争优势。","对AI在本行业战略意义的认知。"]
+ ],
+ [
+  ["We have a clear list of tasks/processes where AI could add value.","e.g. drafting emails, summarising documents, chatbots, analytics.","我们已清楚列出AI可创造价值的任务/流程。","例如：起草邮件、总结文件、聊天机器人、数据分析。"],
+  ["We can estimate the time or cost currently spent on those tasks.","Needed to size the potential ROI of a use case.","我们能估算目前在这些任务上花费的时间或成本。","用于衡量应用场景的潜在投资回报。"],
+  ["We have prioritised which AI use case to try first (a quick win).","Start small: high-impact, low-effort pilots.","我们已确定优先尝试哪个AI应用场景（速赢项目）。","从小做起：高影响、低投入的试点。"],
+  ["We have already trialled at least one AI tool in a real task.","e.g. Copilot, ChatGPT, an AI feature in existing software.","我们已在实际任务中试用过至少一个AI工具。","例如：Copilot、ChatGPT，或现有软件中的AI功能。"]
+ ],
+ [
+  ["Our key business data (sales, customers, operations) is stored digitally.","vs paper, disconnected spreadsheets, or staff memory.","我们的关键业务数据（销售、客户、运营）以数字方式存储。","相对于纸质、零散表格或员工记忆。"],
+  ["Our data is reasonably accurate, complete and up to date.","Poor data quality is the most common SME AI blocker.","我们的数据相对准确、完整且及时更新。","数据质量差是中小企业AI最常见的障碍。"],
+  ["We can access and export our data when we need it.","e.g. from your POS, accounting, or CRM system.","我们可以在需要时访问并导出数据。","例如：从POS、会计或CRM系统。"],
+  ["We have basic rules for who can access and edit our data.","Simple data ownership and access control.","我们对谁可访问和编辑数据设有基本规则。","简单的数据归属与访问控制。"]
+ ],
+ [
+  ["Our staff are generally comfortable using digital tools and software.","Baseline digital literacy across the team.","我们的员工普遍能自如使用数字工具和软件。","团队的基本数字素养。"],
+  ["Our team is open to changing how they work if it improves results.","Change appetite / resistance to new ways of working.","若能改善成效，我们的团队愿意改变工作方式。","对变革的接受度／抵触程度。"],
+  ["We are willing to invest time in training staff on AI tools.","Capacity and willingness to upskill.","我们愿意投入时间培训员工使用AI工具。","提升技能的能力与意愿。"],
+  ["Someone in our team could learn to use AI tools with light guidance.","Latent capability to adopt without hiring specialists.","团队中有人在少量指导下便能学会使用AI工具。","无需招聘专家即可采用的潜在能力。"]
+ ],
+ [
+  ["We use cloud-based/modern software for our core operations.","e.g. cloud accounting, CRM, e-commerce, Microsoft 365 / Google Workspace.","我们的核心运营使用云端/现代软件。","例如：云端会计、CRM、电商、Microsoft 365 / Google Workspace。"],
+  ["Our existing software already includes AI features we could switch on.","Many SaaS tools now embed AI at no/low extra cost.","我们现有软件已内置可启用的AI功能。","许多SaaS工具已内嵌AI，几乎无需额外费用。"],
+  ["We have reliable internet and devices to run AI-enabled tools.","Basic infrastructure readiness.","我们拥有可靠的网络和设备来运行AI工具。","基本的基础设施准备。"],
+  ["We can integrate a new tool with our current systems if needed.","e.g. connecting a chatbot to your website or catalogue.","如有需要，我们能将新工具与现有系统整合。","例如：将聊天机器人接入网站或产品目录。"]
+ ],
+ [
+  ["We understand our obligations for protecting personal data (e.g. PDPA).","Data-protection compliance awareness.","我们了解保护个人数据的义务（如PDPA个人数据保护法）。","数据保护合规意识。"],
+  ["We have basic cybersecurity measures in place.","e.g. strong passwords, MFA, backups, updated software.","我们已采取基本的网络安全措施。","例如：强密码、多重验证、备份、软件更新。"],
+  ["We would check AI outputs for accuracy before acting on them.","Awareness that AI can be wrong / 'hallucinate'.","在采用AI输出前，我们会核查其准确性。","意识到AI可能出错／产生「幻觉」。"],
+  ["We are mindful of using AI ethically and transparently with customers.","e.g. disclosing chatbots, avoiding biased decisions.","我们注重以合乎道德、透明的方式对客户使用AI。","例如：告知使用聊天机器人、避免偏见决策。"]
+ ],
+ [
+  ["We have (or can allocate) a budget to trial AI tools.","Even a small monthly subscription counts.","我们有（或能拨出）预算来试用AI工具。","即使是小额月度订阅也算。"],
+  ["We can measure whether an AI investment paid off.","Ability to track time saved, cost reduced, or revenue gained.","我们能衡量AI投资是否见效。","能追踪节省的时间、降低的成本或增加的收入。"],
+  ["We are aware of government grants/support for SME digitalisation.","e.g. EDG, PSG, SFEC, SkillsFuture (Singapore).","我们了解政府对中小企业数字化的资助/支持。","例如：EDG、PSG、SFEC、技能创前程（新加坡）。"],
+  ["We could co-fund a larger AI project if the business case is strong.","Financial capacity beyond a small pilot.","若商业理据充分，我们能为更大型AI项目共同出资。","超出小型试点的资金能力。"]
+ ]
+];
+
+const OVERLAYS = {
+ "Retail":[
+  ["We capture customer purchase history usable for personalised offers/recommendations.","Enables AI product recommendations & targeted promotions.","我们记录客户购买历史，可用于个性化优惠/推荐。","支持AI产品推荐与精准促销。"],
+  ["We have inventory/stock data that could feed AI demand forecasting.","Reduce stockouts and overstock via predictive replenishment.","我们拥有可用于AI需求预测的库存数据。","通过预测性补货减少缺货与积压。"],
+  ["We handle enough customer enquiries that an AI chatbot could help.","Automate FAQs, order status, product queries.","我们的客户咨询量足以让AI聊天机器人发挥作用。","自动处理常见问题、订单状态、产品查询。"],
+  ["We run marketing/social content AI could help generate or optimise.","AI-assisted copy, images, campaign targeting.","我们的营销/社媒内容可由AI协助生成或优化。","AI辅助文案、图像、活动定位。"],
+  ["We sell online/omnichannel where AI could improve search/merchandising.","Smart search, dynamic pricing, visual merchandising.","我们进行线上/全渠道销售，AI可改善搜索/商品陈列。","智能搜索、动态定价、视觉营销。"]
+ ],
+ "Finance":[
+  ["We process documents (invoices/statements/forms) AI could extract data from.","Intelligent document processing / OCR + AI.","我们处理的文件（发票/对账单/表格）可由AI提取数据。","智能文档处理 / OCR + AI。"],
+  ["We perform checks (KYC/credit/fraud) AI could help screen or flag.","AI-assisted risk screening and anomaly detection.","我们进行的审查（KYC/信用/欺诈）可由AI协助筛查或预警。","AI辅助风险筛查与异常检测。"],
+  ["We answer client queries an AI assistant could handle or draft.","Client servicing, advisory drafting, FAQ automation.","我们处理的客户咨询可由AI助手回应或起草。","客户服务、咨询草拟、常见问题自动化。"],
+  ["We have strong controls for data privacy and regulatory compliance.","Finance is highly regulated — governance readiness is critical.","我们对数据隐私与监管合规有严格管控。","金融业监管严格——治理准备至关重要。"],
+  ["We produce reports/analysis AI could help summarise or forecast.","Automated reporting, forecasting, portfolio insights.","我们编制的报告/分析可由AI协助总结或预测。","自动报告、预测、投资组合洞察。"]
+ ],
+ "Logistics & Supply Chain":[
+  ["We track shipments/orders with data AI could use to predict delays.","Predictive ETA and disruption alerts.","我们追踪货运/订单的数据可供AI预测延误。","预测到达时间与中断预警。"],
+  ["We plan routes/deliveries AI could help optimise.","AI route optimisation to cut fuel/time.","我们规划的路线/配送可由AI协助优化。","AI路线优化以节省油耗/时间。"],
+  ["We manage warehouse/inventory levels AI could forecast or optimise.","Demand forecasting & smart replenishment.","我们管理的仓库/库存水平可由AI预测或优化。","需求预测与智能补货。"],
+  ["We handle documentation (customs/BOL/PO) AI could automate.","Document automation across the supply chain.","我们处理的单证（报关/提单/采购单）可由AI自动化。","供应链全流程的单证自动化。"],
+  ["We have supplier/partner data AI could use to assess risk or performance.","Supplier risk scoring and performance analytics.","我们拥有可供AI评估风险或绩效的供应商/伙伴数据。","供应商风险评分与绩效分析。"]
+ ]
+};
+
+const RECS = {
+ en:{
+  "1. Business Case & Leadership":"Nominate a part-time AI champion and hold a 1-hour leadership session to agree 2–3 target business problems. (SkillsFuture)",
+  "2. Use-Case Readiness":"List repetitive/time-consuming tasks, estimate hours spent, and pick ONE high-impact quick win to trial with a ready-made tool (Copilot/ChatGPT). (PSG)",
+  "3. Data Readiness":"Consolidate key data (sales/customers/stock) into one cloud system, fix obvious quality gaps, and set simple access rules with backups. (PSG/EDG)",
+  "4. People & Change Readiness":"Run a short AI-awareness session, enrol 1–2 staff in an intro AI workshop, and publish a simple internal 'AI usage' guideline. (SFEC/SkillsFuture)",
+  "5. Tools & Adoption":"Audit your current software for built-in AI features you already pay for and switch on the useful ones; trial vendor-neutral tools before committing. (PSG)",
+  "6. Responsible AI & Compliance":"Do a PDPA self-check, turn on MFA/backups/updates, and adopt a 'human-checks-AI' rule for customer-facing or financial outputs.",
+  "7. Financial Readiness & Funding":"Set a small monthly AI trial budget with a simple ROI tracker, and explore SG grants (PSG tools, EDG projects, SFEC/SkillsFuture training). (PSG/EDG/SFEC)",
+  "8. Industry-Specific Use Cases":"Implement your top sector use case as a scoped pilot with clear success metrics. (EDG)"
+ },
+ zh:{
+  "1. Business Case & Leadership":"任命一位兼职AI负责人，并召开一小时的领导层会议，确定2–3个目标业务问题。（技能创前程）",
+  "2. Use-Case Readiness":"列出重复/耗时的任务，估算所花时间，选择一个高影响的速赢项目，用现成工具（Copilot/ChatGPT）试用。（PSG）",
+  "3. Data Readiness":"将关键数据（销售/客户/库存）整合到一个云端系统，修正明显的质量缺口，并设立简单的访问规则与备份。（PSG/EDG）",
+  "4. People & Change Readiness":"举办简短的AI认知讲座，安排1–2名员工参加入门AI工作坊，并发布简单的内部「AI使用指引」。（SFEC/技能创前程）",
+  "5. Tools & Adoption":"审查现有软件中已付费的内置AI功能并启用；在正式采用前先试用中立的工具。（PSG）",
+  "6. Responsible AI & Compliance":"进行PDPA自查，开启多重验证/备份/更新，并对面向客户或财务的输出采用「人工复核AI」规则。",
+  "7. Financial Readiness & Funding":"设定小额月度AI试用预算并配以简单的投资回报追踪，探索新加坡资助（PSG工具、EDG项目、SFEC/技能创前程培训）。（PSG/EDG/SFEC）",
+  "8. Industry-Specific Use Cases":"将您最重要的行业应用场景作为有明确成功指标的试点加以实施。（EDG）"
+ }
+};
+
+const USECASES = {
+ en:{
+  "Retail":["Personalised recommendations","Demand forecasting","Customer-service chatbot","AI marketing content","Smart search & pricing"],
+  "Finance":["Document processing","KYC / fraud screening","Client-servicing assistant","Automated reporting","Compliance monitoring"],
+  "Logistics & Supply Chain":["Predictive ETA & delay alerts","Route optimisation","Inventory optimisation","Document automation","Supplier risk analytics"]
+ },
+ zh:{
+  "Retail":["个性化推荐","需求预测","客服聊天机器人","AI营销内容","智能搜索与定价"],
+  "Finance":["文档处理","KYC / 欺诈筛查","客户服务助手","自动报告","合规监控"],
+  "Logistics & Supply Chain":["预测到达与延误预警","路线优化","库存优化","单证自动化","供应商风险分析"]
+ }
+};
+
+const PILLS = {
+ en:["Business Case & Leadership","Use-Case Readiness","Data Readiness","People & Change","Tools & Adoption","Responsible AI & Compliance","Financial Readiness & Funding","Industry Use Cases"],
+ zh:["商业价值与领导力","应用场景准备度","数据准备度","人员与变革","工具与采用","负责任AI与合规","资金准备与资助","行业应用场景"]
+};
+
+/* ================= STATE ================= */
+let industryKey="Retail", scopeKey="Overall Company", answers={}, items=[], radarChart=null, hasResults=false, lastResult=null;
+const PKEYS=["1. Business Case & Leadership","2. Use-Case Readiness","3. Data Readiness","4. People & Change Readiness","5. Tools & Adoption","6. Responsible AI & Compliance","7. Financial Readiness & Funding","8. Industry-Specific Use Cases"];
+
+function stageIndex(p){const S=STAGES.en;for(let i=0;i<S.length;i++){if(p>=S[i][1]&&p<=S[i][2])return i;}return 0;}
+function bandColor(p){return p<=20?'#D64545':p<=40?'#E67E22':p<=60?'#E8B800':p<=80?'#7DBB4F':'#2E9E5B';}
+
+/* ================= LANGUAGE APPLY ================= */
+function setLang(l){
+  LANG=l;
+  document.getElementById('btnEN').classList.toggle('active',l==='en');
+  document.getElementById('btnZH').classList.toggle('active',l==='zh');
+  document.documentElement.lang=l==='zh'?'zh':'en';
+  applyStaticText(); rebuildIndustryDropdown(); rebuildScopeDropdown();
+  if(!document.getElementById('quiz').classList.contains('hidden')) renderQuestions();
+  if(hasResults) showResults(true);
+}
+function applyStaticText(){
+  const t=T[LANG];
+  document.getElementById('logoHeader').innerHTML=smuaLogo(80);
+  document.getElementById('logoClause').innerHTML=smuaLogo(64);
+  document.getElementById('appTitle').textContent=t.appTitle;
+  document.getElementById('appSubtitle').textContent=t.appSubtitle;
+  document.getElementById('introH').textContent=t.introH;
+  document.getElementById('objH').textContent=t.objH;
+  document.getElementById('objP').textContent=t.objP;
+  document.getElementById('introSub').textContent=t.introSub;
+  document.getElementById('lblIndustry').textContent=t.lblIndustry;
+  document.getElementById('lblScope').textContent=t.lblScope;
+  document.getElementById('lblCompany').textContent=t.lblCompany;
+  document.getElementById('company').placeholder=t.companyPH;
+  document.getElementById('btnStart').textContent=t.btnStart;
+  document.getElementById('devClauseText').textContent=t.devClause;
+  document.getElementById('introFoot').textContent=t.introFoot;
+  document.getElementById('btnBack').textContent=t.btnBack;
+  document.getElementById('seeResults').textContent=t.seeResults;
+  document.getElementById('btnRetake').textContent=t.btnRetake;
+  document.getElementById('btnPrint').textContent=t.btnPrint;
+  document.getElementById('ovLbl').textContent=t.ovLbl;
+  document.getElementById('barsH').textContent=t.barsH;
+  document.getElementById('radarH').textContent=t.radarH;
+  document.getElementById('prioH').textContent=t.prioH;
+  document.getElementById('prioSub').textContent=t.prioSub;
+  document.getElementById('ucH').textContent=t.ucH;
+  document.getElementById('saveTitle').textContent=t.saveTitle;
+  document.getElementById('saveHint').textContent=t.saveHint;
+  document.getElementById('saveBtn').textContent=t.saveBtn;
+  document.getElementById('ctaH').textContent=t.ctaH;
+  document.getElementById('ctaP').textContent=t.ctaP;
+  document.getElementById('ctaBtn1').textContent=t.ctaBtn1;
+  document.getElementById('ctaBtn2').textContent=t.ctaBtn2;
+  document.getElementById('resFoot').textContent=t.resFoot;
+  const pw=document.getElementById('introPills'); pw.innerHTML="";
+  PILLS[LANG].forEach(p=>{const s=document.createElement('span');s.className='pill';s.textContent=p;pw.appendChild(s);});
+  const cg=document.getElementById('ctaGrid'); cg.innerHTML="";
+  t.ctaItems.forEach(it=>{const d=document.createElement('div');d.className='item';d.innerHTML=`<b>${it[0]}</b><span>${it[1]}</span>`;cg.appendChild(d);});
+}
+function rebuildIndustryDropdown(){
+  const sel=document.getElementById('industry'),prev=industryKey; sel.innerHTML="";
+  INDUSTRIES[LANG].forEach(lbl=>{const key=IND_KEY[lbl];const o=document.createElement('option');o.value=key;o.textContent=lbl;if(key===prev)o.selected=true;sel.appendChild(o);});
+}
+function rebuildScopeDropdown(){
+  const sel=document.getElementById('scope'),prev=scopeKey; sel.innerHTML="";
+  SCOPES[LANG].forEach((lbl,i)=>{const key=SCOPES.en[i];const o=document.createElement('option');o.value=key;o.textContent=lbl;if(key===prev)o.selected=true;sel.appendChild(o);});
+}
+function ctaClick(){ window.location.href=CTA_LINK; }
+
+/* Submit to SMUA — opens the Microsoft Form; substitutes %%COMPANY%% and %%SCOPE%% tokens. */
+function submitToSMUA(){
+  if(!FORM_URL || FORM_URL.indexOf("PASTE_")===0){
+    alert(LANG==='zh'
+      ? "尚未配置提交链接。请在代码中将 FORM_URL 设置为您的 Microsoft Forms 链接。"
+      : "Submission link not configured yet. Please set FORM_URL to your Microsoft Form link in the code.");
+    return;
+  }
+  const company=encodeURIComponent(document.getElementById('company').value.trim());
+  const scope=encodeURIComponent(document.getElementById('scope').value);
+  let url=FORM_URL.replace("%%COMPANY%%",company).replace("%%SCOPE%%",scope);
+  window.open(url,"_blank");
+}
+
+/* ================= ITEMS ================= */
+function buildItems(){
+  items=[];
+  CORE.forEach((qs,pi)=>qs.forEach(q=>items.push({pIndex:pi,pkey:PKEYS[pi],en:q[0],enh:q[1],zh:q[2],zhh:q[3],ind:false})));
+  OVERLAYS[industryKey].forEach(q=>items.push({pIndex:7,pkey:PKEYS[7],en:q[0],enh:q[1],zh:q[2],zhh:q[3],ind:true}));
+}
+
+/* ================= FLOW ================= */
+function start(){
+  industryKey=document.getElementById('industry').value;
+  scopeKey=document.getElementById('scope').value;
+  answers={};hasResults=false;buildItems();
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  renderQuestions();updateProgress();window.scrollTo({top:0,behavior:'smooth'});
+}
+function backToIntro(){document.getElementById('quiz').classList.add('hidden');document.getElementById('intro').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
+function industryLabel(){const i=INDUSTRIES.en.indexOf(industryKey);return INDUSTRIES[LANG][i>=0?i:0];}
+function scopeLabel(){const i=SCOPES.en.indexOf(scopeKey);return SCOPES[LANG][i>=0?i:0];}
+function pillarLabel(pi){return PILLARS[LANG][pi];}
+
+function renderQuestions(){
+  document.getElementById('quizTitle').textContent=T[LANG].quizTitle+industryLabel()+" · "+scopeLabel();
+  const wrap=document.getElementById('questions');wrap.innerHTML="";let last=-1;
+  items.forEach((it,idx)=>{
+    if(it.pIndex!==last){const h=document.createElement('div');h.className='pillar-head';h.textContent=it.ind?pillarLabel(7)+" · "+industryLabel():pillarLabel(it.pIndex);wrap.appendChild(h);last=it.pIndex;}
+    const c=document.createElement('div');c.className='qcard'+(it.ind?' industry':'');
+    const qt=LANG==='zh'?it.zh:it.en,qh=LANG==='zh'?it.zhh:it.enh;
+    c.innerHTML=`<div class="qtext">${qt}</div><div class="qhelp">${qh}</div>`;
+    const opts=document.createElement('div');opts.className='opts';
+    const LIKERT=LANG==='zh'?[[0,"完全没有","/ 不清楚"],[1,"刚起步","/ 临时性"],[2,"部分","到位"],[3,"大致","到位"],[4,"完全/先进","到位"]]:[[0,"Not at all","/ Don't know"],[1,"Just starting","/ Ad hoc"],[2,"Partially","in place"],[3,"Mostly","in place"],[4,"Fully / Advanced","in place"]];
+    LIKERT.forEach(o=>{const b=document.createElement('div');b.className='opt';b.innerHTML=`${o[0]} · ${o[1]}<small>${o[2]}</small>`;if(answers[idx]===o[0])b.classList.add('sel');b.onclick=()=>{answers[idx]=o[0];[...opts.children].forEach(x=>x.classList.remove('sel'));b.classList.add('sel');updateProgress();};opts.appendChild(b);});
+    c.appendChild(opts);wrap.appendChild(c);
+  });
+}
+function updateProgress(){const done=Object.keys(answers).length,total=items.length;document.getElementById('counter').textContent=T[LANG].counter(done,total);document.getElementById('pbar').style.width=(done/total*100)+"%";document.getElementById('seeResults').disabled=done<total;}
+
+/* ================= SCORING ================= */
+function computeScores(){
+  const agg={};PKEYS.forEach(k=>agg[k]={sum:0,n:0});
+  items.forEach((it,idx)=>{const v=answers[idx]||0;agg[it.pkey].sum+=v;agg[it.pkey].n++;});
+  const scores={};PKEYS.forEach(k=>{const{sum,n}=agg[k];scores[k]=n?Math.round(sum/(n*4)*100):0;});
+  const vals=Object.values(scores);const overall=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  return{scores,overall};
+}
+
+/* ================= RESULTS ================= */
+function showResults(keepScroll){
+  hasResults=true;const{scores,overall}=computeScores();const t=T[LANG];
+  const company=document.getElementById('company').value.trim();
+  lastResult={company,scope:scopeKey,industry:industryKey,scores,overall,stage:STAGES.en[stageIndex(overall)][0]};
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('results').classList.remove('hidden');
+  document.getElementById('resTitle').textContent=(company?company+" — ":"")+t.resTitle;
+  document.getElementById('resSub').textContent=t.resSub(industryLabel(),scopeLabel(),new Date().toLocaleDateString(LANG==='zh'?'zh-CN':'en-GB'));
+  const arc=document.getElementById('gaugeArc'),circ=452;arc.style.stroke=bandColor(overall);arc.style.strokeDashoffset=circ-(circ*overall/100);
+  document.getElementById('ovNum').textContent=overall+"%";
+  const si=stageIndex(overall);const os=document.getElementById('ovStage');os.textContent=STAGES[LANG][si][0];os.style.color=bandColor(overall);
+  const ld=document.getElementById('ladder');ld.innerHTML="";
+  STAGES[LANG].forEach((row,i)=>{const[n,a,b]=row;const act=(i===si);const d=document.createElement('div');d.className='step'+(act?' active':'');d.innerHTML=`<span>${n}${act?t.youAreHere:''}</span><span>${a}–${b}%</span>`;ld.appendChild(d);});
+  const bars=document.getElementById('bars');bars.innerHTML="";
+  PKEYS.forEach((k,i)=>{const val=scores[k];const row=document.createElement('div');row.className='barrow';row.innerHTML=`<div>${pillarLabel(i)}</div><div class="bar"><div style="width:${val}%;background:${bandColor(val)}"></div></div><b>${val}%</b>`;bars.appendChild(row);});
+  const ctx=document.getElementById('radar');if(radarChart)radarChart.destroy();
+  radarChart=new Chart(ctx,{type:'radar',data:{labels:PILLS[LANG],datasets:[{label:t.radarLabel,data:PKEYS.map(k=>scores[k]),fill:true,backgroundColor:'rgba(46,84,150,.25)',borderColor:'#2E5496',pointBackgroundColor:'#1C2A5E'}]},options:{responsive:true,scales:{r:{min:0,max:100,ticks:{stepSize:20}}},plugins:{legend:{display:false}}}});
+  const low=[...PKEYS].sort((a,b)=>scores[a]-scores[b]).slice(0,3);
+  const pr=document.getElementById('priorities');pr.innerHTML="";
+  low.forEach((k,i)=>{const val=scores[k];const pi=PKEYS.indexOf(k);const d=document.createElement('div');d.className='prio';d.innerHTML=`<div class="n" style="background:${bandColor(val)}">${i+1}</div><div class="txt"><b>${pillarLabel(pi)} — ${val}% (${STAGES[LANG][stageIndex(val)][0]})</b><p>${RECS[LANG][k]}</p></div>`;pr.appendChild(d);});
+  const uc=document.getElementById('usecases');uc.innerHTML="";
+  USECASES[LANG][industryKey].forEach(x=>{const s=document.createElement('span');s.textContent=x;uc.appendChild(s);});
+  if(!keepScroll)window.scrollTo({top:0,behavior:'smooth'});
+}
+function restart(){hasResults=false;document.getElementById('results').classList.add('hidden');document.getElementById('intro').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
+
+/* ================= INIT ================= */
+applyStaticText();rebuildIndustryDropdown();rebuildScopeDropdown();
+</script>
+</body>
+</html>
