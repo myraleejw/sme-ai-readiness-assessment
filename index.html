@@ -735,97 +735,36 @@ function setLang(l){
   if(hasResults) showResults(true);
 }
 function applyStaticText(){
-  const t = T[LANG];
-
-  document.getElementById('logoHeader').innerHTML = smuaLogo(80);
-  document.getElementById('logoClause').innerHTML = smuaLogo(64);
-
-  document.getElementById('appTitle').textContent = t.appTitle;
-  document.getElementById('appSubtitle').textContent = t.appSubtitle;
-
-  document.getElementById('introH').textContent = t.introH;
-  document.getElementById('objH').textContent = t.objH;
-  document.getElementById('objP').textContent = t.objP;
-  document.getElementById('introSub').textContent = t.introSub;
-
-  document.getElementById('lblIndustry').textContent = t.lblIndustry;
-  document.getElementById('lblScope').textContent = t.lblScope;
-  document.getElementById('lblCompany').textContent = t.lblCompany;
-
-  document.getElementById('company').placeholder = t.companyPH;
-
-  if (document.getElementById('lblEmail')) {
-    document.getElementById('lblEmail').textContent = t.lblEmail;
-  }
-
-  if (document.getElementById('email')) {
-    document.getElementById('email').placeholder = t.emailPH;
-  }
-
-  if (document.getElementById('lblEmailPreferences')) {
-    document.getElementById('lblEmailPreferences').textContent = t.lblEmailPreferences;
-  }
-
-  if (document.getElementById('marketingConsentText')) {
-    document.getElementById('marketingConsentText').textContent = t.marketingConsentText;
-  }
-
-  document.getElementById('btnStart').textContent = t.btnStart;
-  document.getElementById('devClauseText').textContent = t.devClause;
-  document.getElementById('introFoot').textContent = t.introFoot;
-
-  document.getElementById('btnBack').textContent = t.btnBack;
-  document.getElementById('seeResults').textContent = t.seeResults;
-
-  document.getElementById('btnRetake').textContent = t.btnRetake;
-  document.getElementById('btnPrint').textContent = t.btnPrint;
-  document.getElementById('ovLbl').textContent = t.ovLbl;
-
-  document.getElementById('barsH').textContent = t.barsH;
-  document.getElementById('radarH').textContent = t.radarH;
-  document.getElementById('prioH').textContent = t.prioH;
-  document.getElementById('prioSub').textContent = t.prioSub;
-  document.getElementById('ucH').textContent = t.ucH;
-
-  document.getElementById('ctaH').textContent = t.ctaH;
-  document.getElementById('ctaP').textContent = t.ctaP;
-  document.getElementById('ctaBtn1').textContent = t.ctaBtn1;
-  document.getElementById('ctaBtn2').textContent = t.ctaBtn2;
-  document.getElementById('resFoot').textContent = t.resFoot;
-
-  const pw = document.getElementById('introPills');
-  pw.innerHTML = "";
-
-  PILLS[LANG].forEach(p => {
-    const s = document.createElement('span');
-    s.className = 'pill';
-    s.textContent = p;
-    pw.appendChild(s);
-  });
-
-  const cg = document.getElementById('ctaGrid');
-  cg.innerHTML = "";
-
-  t.ctaItems.forEach(it => {
-    const d = document.createElement('div');
-    d.className = 'item';
-    d.innerHTML = `<b>${it[0]}</b><span>${it[1]}</span>`;
-    cg.appendChild(d);
-  });
-}
   const t=T[LANG];
+
   document.getElementById('logoHeader').innerHTML=smuaLogo(80);
   document.getElementById('logoClause').innerHTML=smuaLogo(64);
+
   document.getElementById('appTitle').textContent=t.appTitle;
   document.getElementById('appSubtitle').textContent=t.appSubtitle;
   document.getElementById('introH').textContent=t.introH;
   document.getElementById('objH').textContent=t.objH;
   document.getElementById('objP').textContent=t.objP;
   document.getElementById('introSub').textContent=t.introSub;
+
   document.getElementById('lblIndustry').textContent=t.lblIndustry;
   document.getElementById('lblScope').textContent=t.lblScope;
   document.getElementById('lblCompany').textContent=t.lblCompany;
   document.getElementById('company').placeholder=t.companyPH;
+
+  if(document.getElementById('lblEmail')){
+    document.getElementById('lblEmail').textContent=t.lblEmail;
+  }
+  if(document.getElementById('email')){
+    document.getElementById('email').placeholder=t.emailPH;
+  }
+  if(document.getElementById('lblEmailPreferences')){
+    document.getElementById('lblEmailPreferences').textContent=t.lblEmailPreferences;
+  }
+  if(document.getElementById('marketingConsentText')){
+    document.getElementById('marketingConsentText').textContent=t.marketingConsentText;
+  }
+
   document.getElementById('btnStart').textContent=t.btnStart;
   document.getElementById('devClauseText').textContent=t.devClause;
   document.getElementById('introFoot').textContent=t.introFoot;
@@ -839,32 +778,75 @@ function applyStaticText(){
   document.getElementById('prioH').textContent=t.prioH;
   document.getElementById('prioSub').textContent=t.prioSub;
   document.getElementById('ucH').textContent=t.ucH;
-  document.getElementById('saveTitle').textContent=t.saveTitle;
-  document.getElementById('saveHint').textContent=t.saveHint;
-  document.getElementById('saveBtn').textContent=t.saveBtn;
   document.getElementById('ctaH').textContent=t.ctaH;
   document.getElementById('ctaP').textContent=t.ctaP;
   document.getElementById('ctaBtn1').textContent=t.ctaBtn1;
   document.getElementById('ctaBtn2').textContent=t.ctaBtn2;
   document.getElementById('resFoot').textContent=t.resFoot;
-  const pw=document.getElementById('introPills'); pw.innerHTML="";
-  PILLS[LANG].forEach(p=>{const s=document.createElement('span');s.className='pill';s.textContent=p;pw.appendChild(s);});
-  const cg=document.getElementById('ctaGrid'); cg.innerHTML="";
-  t.ctaItems.forEach(it=>{const d=document.createElement('div');d.className='item';d.innerHTML=`<b>${it[0]}</b><span>${it[1]}</span>`;cg.appendChild(d);});
+
+  const pw=document.getElementById('introPills');
+  pw.innerHTML="";
+  PILLS[LANG].forEach(p=>{
+    const s=document.createElement('span');
+    s.className='pill';
+    s.textContent=p;
+    pw.appendChild(s);
+  });
+
+  const cg=document.getElementById('ctaGrid');
+  cg.innerHTML="";
+  t.ctaItems.forEach(it=>{
+    const d=document.createElement('div');
+    d.className='item';
+    d.innerHTML=`<b>${it[0]}</b><span>${it[1]}</span>`;
+    cg.appendChild(d);
+  });
 }
 function rebuildIndustryDropdown(){
-  const sel=document.getElementById('industry'),prev=industryKey; sel.innerHTML="";
-  INDUSTRIES[LANG].forEach(lbl=>{const key=IND_KEY[lbl];const o=document.createElement('option');o.value=key;o.textContent=lbl;if(key===prev)o.selected=true;sel.appendChild(o);});
+  const sel=document.getElementById('industry');
+  const previousValue=industryKey || "Retail";
+  sel.innerHTML="";
+
+  const industryOptions=INDUSTRIES[LANG] || INDUSTRIES.en;
+  industryOptions.forEach(lbl=>{
+    const key=IND_KEY[lbl] || lbl;
+    const option=document.createElement('option');
+    option.value=key;
+    option.textContent=lbl;
+    if(key===previousValue){ option.selected=true; }
+    sel.appendChild(option);
+  });
+
+  if(!sel.value && sel.options.length>0){
+    sel.selectedIndex=0;
+    industryKey=sel.value;
+  }
 }
 function rebuildScopeDropdown(){
-  const sel=document.getElementById('scope'),prev=scopeKey; sel.innerHTML="";
-  SCOPES[LANG].forEach((lbl,i)=>{const key=SCOPES.en[i];const o=document.createElement('option');o.value=key;o.textContent=lbl;if(key===prev)o.selected=true;sel.appendChild(o);});
+  const sel=document.getElementById('scope');
+  const previousValue=scopeKey || "Overall Company";
+  sel.innerHTML="";
+
+  const scopeOptions=SCOPES[LANG] || SCOPES.en;
+  scopeOptions.forEach((lbl,i)=>{
+    const key=SCOPES.en[i];
+    const option=document.createElement('option');
+    option.value=key;
+    option.textContent=lbl;
+    if(key===previousValue){ option.selected=true; }
+    sel.appendChild(option);
+  });
+
+  if(!sel.value && sel.options.length>0){
+    sel.selectedIndex=0;
+    scopeKey=sel.value;
+  }
 }
 function ctaClick(){ window.open(CTA_LINK, '_blank'); }
 
 /* Submit assessment to SharePoint via Power Automate. */
 async function submitAssessmentToSharePoint(){
-  const email = document.getElementById('email').value.trim();
+  const email=document.getElementById('email').value.trim();
 
   if(!email){
     alert(LANG==='zh'
@@ -880,34 +862,34 @@ async function submitAssessmentToSharePoint(){
     return false;
   }
 
-  const {scores, overall} = computeScores();
-  const company = document.getElementById('company').value.trim();
-  const marketingConsent = document.getElementById('marketingConsent').checked;
+  const {scores,overall}=computeScores();
+  const company=document.getElementById('company').value.trim();
+  const marketingConsent=document.getElementById('marketingConsent').checked;
 
-  const payload = {
-    submittedAt: new Date().toISOString(),
-    company: company,
-    email: email,
-    emailPreferences: marketingConsent ? "Opted in" : "Not opted in",
-    marketingConsent: marketingConsent,
-    industry: industryKey,
-    industryLabel: industryLabel(),
-    scope: scopeKey,
-    scopeLabel: scopeLabel(),
-    language: LANG,
-    overallScore: overall,
-    maturityStage: STAGES.en[stageIndex(overall)][0],
-    scores: scores,
-    answers: items.map((item, index) => ({
-      pillar: item.pkey,
-      questionEnglish: item.en,
-      questionChinese: item.zh,
-      answer: answers[index]
+  const payload={
+    submittedAt:new Date().toISOString(),
+    company:company,
+    email:email,
+    emailPreferences:marketingConsent ? "Opted in" : "Not opted in",
+    marketingConsent:marketingConsent,
+    industry:industryKey,
+    industryLabel:industryLabel(),
+    scope:scopeKey,
+    scopeLabel:scopeLabel(),
+    language:LANG,
+    overallScore:overall,
+    maturityStage:STAGES.en[stageIndex(overall)][0],
+    scores:scores,
+    answers:items.map((item,index)=>({
+      pillar:item.pkey,
+      questionEnglish:item.en,
+      questionChinese:item.zh,
+      answer:answers[index]
     }))
   };
 
   if(!POWER_AUTOMATE_URL || POWER_AUTOMATE_URL.indexOf("PASTE_")===0){
-    console.warn("Power Automate URL is not configured. Payload preview:", payload);
+    console.warn("Power Automate URL is not configured. Payload preview:",payload);
     alert(LANG==='zh'
       ? "提交链接尚未配置。结果将继续显示，但不会保存到 SharePoint。"
       : "Submission link is not configured yet. Results will be shown, but not saved to SharePoint.");
@@ -915,21 +897,15 @@ async function submitAssessmentToSharePoint(){
   }
 
   try{
-    /* Power Automate HTTP triggers often do not return browser CORS headers.
-       no-cors allows the browser to send the request, but it cannot confirm the response.
-       Check the Power Automate run history and SharePoint List to verify receipt. */
-    await fetch(POWER_AUTOMATE_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "text/plain;charset=UTF-8"
-      },
-      body: JSON.stringify(payload)
+    await fetch(POWER_AUTOMATE_URL,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=UTF-8"},
+      body:JSON.stringify(payload)
     });
-
     return true;
   }catch(error){
-    console.error("SharePoint submission failed:", error);
+    console.error("SharePoint submission failed:",error);
     alert(LANG==='zh'
       ? "提交时发生错误。请稍后再试。"
       : "There was an error submitting your responses. Please try again.");
@@ -990,7 +966,7 @@ function computeScores(){
 
 /* ================= RESULTS ================= */
 async function submitAndShowResults(){
-  const submitted = await submitAssessmentToSharePoint();
+  const submitted=await submitAssessmentToSharePoint();
   if(submitted){
     showResults();
   }
