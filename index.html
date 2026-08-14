@@ -185,7 +185,7 @@
   .btn.save:hover{background:var(--navy-deep);border-color:var(--navy-deep)}
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
   .between{justify-content:space-between}
-  select,input[type=text]{
+  select,input[type=text],input[type=email]{
     padding:11px 12px;
     border:1px solid var(--border);
     border-radius:4px;
@@ -195,9 +195,13 @@
     background:#fff;
     color:var(--text);
   }
-  select:focus,input[type=text]:focus{outline:2px solid var(--gold-light);border-color:var(--gold)}
+  select:focus,input[type=text]:focus,input[type=email]:focus{outline:2px solid var(--gold-light);border-color:var(--gold)}
   .field{display:flex;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap}
   .field label{font-weight:600;color:var(--navy);min-width:160px}
+  .consent-field{align-items:flex-start}
+  .consent-box{max-width:620px;font-size:14px;color:var(--text-secondary);padding-top:2px}
+  .consent-box label{display:flex;align-items:flex-start;gap:10px;min-width:0;color:var(--text-secondary);font-weight:400}
+  .consent-box input[type=checkbox]{margin-top:4px;flex:0 0 auto}
   .progress{height:9px;background:#e9ecf2;border-radius:999px;overflow:hidden;margin:14px 0 4px}
   .progress > div{height:100%;background:linear-gradient(90deg,var(--gold),var(--navy));width:0;transition:.3s}
   .qcard{
@@ -302,7 +306,7 @@
     h2{font-size:28px}
     .card{padding:24px}
     .barrow{grid-template-columns:1fr;gap:6px}
-    select,input[type=text]{width:100%;min-width:0}
+    select,input[type=text],input[type=email]{width:100%;min-width:0}
   }
   @media print{
     header.top .langtoggle,.noprint,.hero{display:none!important}
@@ -353,23 +357,22 @@
       <label id="lblCompany"></label>
       <input type="text" id="company">
     </div>
+    <div class="field">
+      <label id="lblEmail"></label>
+      <input type="email" id="email">
+    </div>
+    <div class="field consent-field">
+      <label id="lblEmailPreferences"></label>
+      <div class="consent-box">
+        <label>
+          <input type="checkbox" id="marketingConsent">
+          <span id="marketingConsentText"></span>
+        </label>
+      </div>
+    </div>
     <div class="row" style="margin-top:20px">
       <button class="btn" id="btnStart" onclick="start()"></button>
     </div>
-    <div class="field">
-  <label id="lblEmail"></label>
-  <input type="email" id="email">
-</div>
-
-<div class="field consent-field">
-  <label id="lblEmailPreferences"></label>
-  <div class="consent-box">
-    <label>
-      <input type="checkbox" id="marketingConsent">
-      <span id="marketingConsentText"></span>
-    </label>
-  </div>
-</div>
     <div class="devclause">
       <span class="logomini" id="logoClause"></span>
       <span id="devClauseText"></span>
@@ -387,7 +390,7 @@
     <div id="questions"></div>
     <div class="row between" style="margin-top:16px">
       <button class="btn ghost" id="btnBack" onclick="backToIntro()"></button>
-      <button class="btn" id="seeResults" onclick="showResults()" disabled></button>
+      <button class="btn" id="seeResults" onclick="submitAndShowResults()" disabled></button>
     </div>
   </div>
 
@@ -435,15 +438,7 @@
     <h2 style="font-size:17px;margin-top:14px" id="ucH"></h2>
     <div class="usecases" id="usecases"></div>
 
-    <!-- SAVE / SUBMIT TO SMUA -->
-    <div class="savebox" id="savebox">
-      <div class="txt">
-        <b id="saveTitle"></b>
-        <p id="saveHint"></p>
-      </div>
-      <button class="btn save" id="saveBtn" onclick="submitToSMUA()"></button>
-    </div>
-
+    <!-- SAVE / SUBMIT TO SMUA removed: submission now happens before showing results -->
     <!-- CALL TO ACTION -->
     <div class="ctabox">
       <h3 id="ctaH"></h3>
@@ -480,15 +475,15 @@ function smuaLogo(h){
 /* =====================================================================
    CONTACT / BOOKING LINK (workshop / consultancy enquiries)
    ===================================================================== */
-const CTA_LINK = "mailto:academy@smu.edu.sg?subject=SME%20AI%20Readiness%20-%20Workshop%2FConsultancy%20Enquiry";
+const CTA_LINK = "https://academy.smu.edu.sg/contact-us";
 
 /* =====================================================================
-   MICROSOFT FORM URL — for official capture into SharePoint Excel.
+   POWER AUTOMATE URL — for official capture into SharePoint List.
    Tokens the tool will substitute if present:
      %%COMPANY%%   -> entered company name
      %%SCOPE%%     -> selected scope (Overall Company / department)
    ===================================================================== */
-const FORM_URL = "PASTE_YOUR_MICROSOFT_FORM_LINK_HERE";
+const POWER_AUTOMATE_URL = "PASTE_YOUR_POWER_AUTOMATE_HTTP_TRIGGER_URL_HERE";
 
 /* ================= LANGUAGE ================= */
 let LANG='en';
@@ -512,14 +507,18 @@ const T = {
   lblIndustry:"Select your industry:",
   lblScope:"Assessing for:",
   lblCompany:"Company name (optional):",
+  lblEmail:"Email address:",
+  lblEmailPreferences:"Email preferences:",
+  marketingConsentText:"Receive occasional product updates and announcements",
   companyPH:"e.g. Bloom & Co.",
+  emailPH:"e.g. name@company.com",
   btnStart:"Start Assessment →",
   devClause:"This tool is developed by SMU Academy (SMUA) and will be enhanced from time to time as AI capabilities and SME needs evolve. Your feedback helps us improve it.",
   introFoot:"Recommendations map to SG support (EDG · PSG · SFEC · SkillsFuture).",
   quizTitle:"Assessment · ",
   counter:(d,t)=>`${d} / ${t} answered`,
   btnBack:"← Change details",
-  seeResults:"See my results →",
+  seeResults:"Submit and see my results →",
   resTitle:"Your AI Readiness Results",
   resSub:(ind,scope,date)=>`Industry: ${ind}  ·  Scope: ${scope}  ·  ${date}`,
   btnRetake:"↺ Retake",
@@ -556,14 +555,18 @@ const T = {
   lblIndustry:"请选择您的行业：",
   lblScope:"评估范围：",
   lblCompany:"公司名称（选填）：",
+  lblEmail:"电邮地址：",
+  lblEmailPreferences:"电邮偏好：",
+  marketingConsentText:"接收不定期产品更新和公告",
   companyPH:"例如：Bloom & Co.",
+  emailPH:"例如：name@company.com",
   btnStart:"开始评估 →",
   devClause:"本工具由新加坡管理大学（SMU Academy，简称SMUA）开发，并将随人工智能技术与中小企业需求的发展不时更新完善。欢迎您提供反馈，助我们不断改进。",
   introFoot:"建议措施对接新加坡政府支持（EDG · PSG · SFEC · 技能创前程）。",
   quizTitle:"评估 · ",
   counter:(d,t)=>`已回答 ${d} / ${t}`,
   btnBack:"← 更改信息",
-  seeResults:"查看我的结果 →",
+  seeResults:"提交并查看结果 →",
   resTitle:"您的人工智能准备度结果",
   resSub:(ind,scope,date)=>`行业：${ind}  ·  范围：${scope}  ·  ${date}`,
   btnRetake:"↺ 重新评估",
@@ -779,20 +782,81 @@ function rebuildScopeDropdown(){
   const sel=document.getElementById('scope'),prev=scopeKey; sel.innerHTML="";
   SCOPES[LANG].forEach((lbl,i)=>{const key=SCOPES.en[i];const o=document.createElement('option');o.value=key;o.textContent=lbl;if(key===prev)o.selected=true;sel.appendChild(o);});
 }
-function ctaClick(){ window.location.href=CTA_LINK; }
+function ctaClick(){ window.open(CTA_LINK, '_blank'); }
 
-/* Submit to SMUA — opens the Microsoft Form; substitutes %%COMPANY%% and %%SCOPE%% tokens. */
-function submitToSMUA(){
-  if(!FORM_URL || FORM_URL.indexOf("PASTE_")===0){
+/* Submit assessment to SharePoint via Power Automate. */
+async function submitAssessmentToSharePoint(){
+  const email = document.getElementById('email').value.trim();
+
+  if(!email){
     alert(LANG==='zh'
-      ? "尚未配置提交链接。请在代码中将 FORM_URL 设置为您的 Microsoft Forms 链接。"
-      : "Submission link not configured yet. Please set FORM_URL to your Microsoft Form link in the code.");
-    return;
+      ? "请填写电邮地址后再提交。"
+      : "Please enter your email address before submitting.");
+    return false;
   }
-  const company=encodeURIComponent(document.getElementById('company').value.trim());
-  const scope=encodeURIComponent(document.getElementById('scope').value);
-  let url=FORM_URL.replace("%%COMPANY%%",company).replace("%%SCOPE%%",scope);
-  window.open(url,"_blank");
+
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    alert(LANG==='zh'
+      ? "请输入有效的电邮地址。"
+      : "Please enter a valid email address.");
+    return false;
+  }
+
+  const {scores, overall} = computeScores();
+  const company = document.getElementById('company').value.trim();
+  const marketingConsent = document.getElementById('marketingConsent').checked;
+
+  const payload = {
+    submittedAt: new Date().toISOString(),
+    company: company,
+    email: email,
+    emailPreferences: marketingConsent ? "Opted in" : "Not opted in",
+    marketingConsent: marketingConsent,
+    industry: industryKey,
+    industryLabel: industryLabel(),
+    scope: scopeKey,
+    scopeLabel: scopeLabel(),
+    language: LANG,
+    overallScore: overall,
+    maturityStage: STAGES.en[stageIndex(overall)][0],
+    scores: scores,
+    answers: items.map((item, index) => ({
+      pillar: item.pkey,
+      questionEnglish: item.en,
+      questionChinese: item.zh,
+      answer: answers[index]
+    }))
+  };
+
+  if(!POWER_AUTOMATE_URL || POWER_AUTOMATE_URL.indexOf("PASTE_")===0){
+    console.warn("Power Automate URL is not configured. Payload preview:", payload);
+    alert(LANG==='zh'
+      ? "提交链接尚未配置。结果将继续显示，但不会保存到 SharePoint。"
+      : "Submission link is not configured yet. Results will be shown, but not saved to SharePoint.");
+    return true;
+  }
+
+  try{
+    /* Power Automate HTTP triggers often do not return browser CORS headers.
+       no-cors allows the browser to send the request, but it cannot confirm the response.
+       Check the Power Automate run history and SharePoint List to verify receipt. */
+    await fetch(POWER_AUTOMATE_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain;charset=UTF-8"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    return true;
+  }catch(error){
+    console.error("SharePoint submission failed:", error);
+    alert(LANG==='zh'
+      ? "提交时发生错误。请稍后再试。"
+      : "There was an error submitting your responses. Please try again.");
+    return false;
+  }
 }
 
 /* ================= ITEMS ================= */
@@ -847,6 +911,13 @@ function computeScores(){
 }
 
 /* ================= RESULTS ================= */
+async function submitAndShowResults(){
+  const submitted = await submitAssessmentToSharePoint();
+  if(submitted){
+    showResults();
+  }
+}
+
 function showResults(keepScroll){
   hasResults=true;const{scores,overall}=computeScores();const t=T[LANG];
   const company=document.getElementById('company').value.trim();
