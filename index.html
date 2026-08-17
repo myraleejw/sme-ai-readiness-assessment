@@ -484,7 +484,6 @@ const CTA_LINK = "https://academy.smu.edu.sg/contact-us";
      %%SCOPE%%     -> selected scope (Overall Company / department)
    ===================================================================== */
 const POWER_AUTOMATE_URL = "https://defaultc98a79ca5a9a4791a243f06afd6746.4d.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c13996eef56447c78f51e75b0fe540c9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=VyF84Csnx3S9W4VesCdZ8FkY6is_tUhoGLepfg__VNs";
-
 /* ================= LANGUAGE ================= */
 let LANG='en';
 
@@ -842,7 +841,13 @@ async function submitAssessmentToSharePoint(){
     return true;
   }
   try{
-    await fetch(POWER_AUTOMATE_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=UTF-8"},body:JSON.stringify(payload)});
+   await fetch(POWER_AUTOMATE_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});
     return true;
   }catch(error){
     console.error("SharePoint submission failed:",error);
