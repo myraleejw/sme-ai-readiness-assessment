@@ -594,8 +594,8 @@ const T = {
  }
 };
 
-const INDUSTRIES = { en:["Retail","Finance","Logistics & Supply Chain"], zh:["零售","金融","物流与供应链"] };
-const IND_KEY = {"Retail":"Retail","Finance":"Finance","Logistics & Supply Chain":"Logistics & Supply Chain","零售":"Retail","金融":"Finance","物流与供应链":"Logistics & Supply Chain"};
+const INDUSTRIES = { en:["Retail & E-commerce", "Finance & Professional Services", "Logistics & Supply Chain", "Food & Beverage / Hospitality", "Healthcare & Wellness", "Education & Training", "Human Resources & Recruitment", "Legal, Risk & Compliance", "Marketing, Media & Creative Services", "Manufacturing & Engineering", "Real Estate, Facilities & Built Environment", "Sustainability, ESG & Non-Profit / Social Impact"], zh:["零售与电子商务", "金融与专业服务", "物流与供应链", "餐饮与酒店服务", "医疗保健与健康服务", "教育与培训", "人力资源与招聘", "法律、风险与合规", "市场营销、媒体与创意服务", "制造与工程", "房地产、设施与建筑环境", "可持续发展、ESG与非营利／社会影响"] };
+const IND_KEY = {"Retail & E-commerce":"Retail & E-commerce","零售与电子商务":"Retail & E-commerce","Finance & Professional Services":"Finance & Professional Services","金融与专业服务":"Finance & Professional Services","Logistics & Supply Chain":"Logistics & Supply Chain","物流与供应链":"Logistics & Supply Chain","Food & Beverage / Hospitality":"Food & Beverage / Hospitality","餐饮与酒店服务":"Food & Beverage / Hospitality","Healthcare & Wellness":"Healthcare & Wellness","医疗保健与健康服务":"Healthcare & Wellness","Education & Training":"Education & Training","教育与培训":"Education & Training","Human Resources & Recruitment":"Human Resources & Recruitment","人力资源与招聘":"Human Resources & Recruitment","Legal, Risk & Compliance":"Legal, Risk & Compliance","法律、风险与合规":"Legal, Risk & Compliance","Marketing, Media & Creative Services":"Marketing, Media & Creative Services","市场营销、媒体与创意服务":"Marketing, Media & Creative Services","Manufacturing & Engineering":"Manufacturing & Engineering","制造与工程":"Manufacturing & Engineering","Real Estate, Facilities & Built Environment":"Real Estate, Facilities & Built Environment","房地产、设施与建筑环境":"Real Estate, Facilities & Built Environment","Sustainability, ESG & Non-Profit / Social Impact":"Sustainability, ESG & Non-Profit / Social Impact","可持续发展、ESG与非营利／社会影响":"Sustainability, ESG & Non-Profit / Social Impact"};
 
 const PILLARS = {
  en:["1. Business Case & Leadership","2. Use-Case Readiness","3. Data Readiness","4. People & Change Readiness","5. Tools & Adoption","6. Responsible AI & Compliance","7. Financial Readiness & Funding","8. Industry-Specific Use Cases"],
@@ -652,29 +652,391 @@ const CORE = [
 ];
 
 const OVERLAYS = {
- "Retail":[
-  ["We capture customer purchase history usable for personalised offers/recommendations.","Enables AI product recommendations & targeted promotions.","我们记录客户购买历史，可用于个性化优惠/推荐。","支持AI产品推荐与精准促销。"],
-  ["We have inventory/stock data that could feed AI demand forecasting.","Reduce stockouts and overstock via predictive replenishment.","我们拥有可用于AI需求预测的库存数据。","通过预测性补货减少缺货与积压。"],
-  ["We handle enough customer enquiries that an AI chatbot could help.","Automate FAQs, order status, product queries.","我们的客户咨询量足以让AI聊天机器人发挥作用。","自动处理常见问题、订单状态、产品查询。"],
-  ["We run marketing/social content AI could help generate or optimise.","AI-assisted copy, images, campaign targeting.","我们的营销/社媒内容可由AI协助生成或优化。","AI辅助文案、图像、活动定位。"],
-  ["We sell online/omnichannel where AI could improve search/merchandising.","Smart search, dynamic pricing, visual merchandising.","我们进行线上/全渠道销售，AI可改善搜索/商品陈列。","智能搜索、动态定价、视觉营销。"]
- ],
- "Finance":[
-  ["We process documents (invoices/statements/forms) AI could extract data from.","Intelligent document processing / OCR + AI.","我们处理的文件（发票/对账单/表格）可由AI提取数据。","智能文档处理 / OCR + AI。"],
-  ["We perform checks (KYC/credit/fraud) AI could help screen or flag.","AI-assisted risk screening and anomaly detection.","我们进行的审查（KYC/信用/欺诈）可由AI协助筛查或预警。","AI辅助风险筛查与异常检测。"],
-  ["We answer client queries an AI assistant could handle or draft.","Client servicing, advisory drafting, FAQ automation.","我们处理的客户咨询可由AI助手回应或起草。","客户服务、咨询草拟、常见问题自动化。"],
-  ["We have strong controls for data privacy and regulatory compliance.","Finance is highly regulated — governance readiness is critical.","我们对数据隐私与监管合规有严格管控。","金融业监管严格——治理准备至关重要。"],
-  ["We produce reports/analysis AI could help summarise or forecast.","Automated reporting, forecasting, portfolio insights.","我们编制的报告/分析可由AI协助总结或预测。","自动报告、预测、投资组合洞察。"]
- ],
- "Logistics & Supply Chain":[
-  ["We track shipments/orders with data AI could use to predict delays.","Predictive ETA and disruption alerts.","我们追踪货运/订单的数据可供AI预测延误。","预测到达时间与中断预警。"],
-  ["We plan routes/deliveries AI could help optimise.","AI route optimisation to cut fuel/time.","我们规划的路线/配送可由AI协助优化。","AI路线优化以节省油耗/时间。"],
-  ["We manage warehouse/inventory levels AI could forecast or optimise.","Demand forecasting & smart replenishment.","我们管理的仓库/库存水平可由AI预测或优化。","需求预测与智能补货。"],
-  ["We handle documentation (customs/BOL/PO) AI could automate.","Document automation across the supply chain.","我们处理的单证（报关/提单/采购单）可由AI自动化。","供应链全流程的单证自动化。"],
-  ["We have supplier/partner data AI could use to assess risk or performance.","Supplier risk scoring and performance analytics.","我们拥有可供AI评估风险或绩效的供应商/伙伴数据。","供应商风险评分与绩效分析。"]
- ]
+  "Retail & E-commerce": [
+    [
+      "We capture customer purchase history that can be used for personalised recommendations.",
+      "",
+      "我们记录客户购买历史，可用于提供个性化推荐。",
+      ""
+    ],
+    [
+      "We maintain inventory and sales data that can support demand forecasting.",
+      "",
+      "我们维护库存与销售数据，可用于支持需求预测。",
+      ""
+    ],
+    [
+      "We receive enough customer enquiries for an AI chatbot or virtual assistant to be useful.",
+      "",
+      "我们收到足够数量的客户咨询，使用AI聊天机器人或虚拟助手将有所帮助。",
+      ""
+    ],
+    [
+      "We regularly create marketing, product, or social media content that AI could help generate.",
+      "",
+      "我们定期制作营销、产品或社交媒体内容，AI可协助生成这些内容。",
+      ""
+    ],
+    [
+      "We sell online or through multiple channels where AI could improve search, pricing, or product discovery.",
+      "",
+      "我们通过线上或多渠道销售，AI可改善搜索、定价或产品发现。",
+      ""
+    ]
+  ],
+  "Finance & Professional Services": [
+    [
+      "We process recurring documents such as invoices, statements, forms, contracts, or reports that AI could extract or summarise.",
+      "",
+      "我们处理发票、对账单、表格、合同或报告等重复性文件，AI可协助提取信息或进行摘要。",
+      ""
+    ],
+    [
+      "We perform checks involving risk, compliance, fraud, credit, audit, or client verification.",
+      "",
+      "我们执行涉及风险、合规、欺诈、信用、审计或客户验证的检查。",
+      ""
+    ],
+    [
+      "We respond to recurring client queries where an AI assistant could draft or support replies.",
+      "",
+      "我们需要回应重复性的客户咨询，AI助手可协助起草或支持回复。",
+      ""
+    ],
+    [
+      "We prepare reports, financial analysis, summaries, or forecasts that AI could help speed up.",
+      "",
+      "我们编制报告、财务分析、摘要或预测，AI可协助加快完成。",
+      ""
+    ],
+    [
+      "We have controls to ensure AI outputs are reviewed before being used in client-facing or regulated work.",
+      "",
+      "我们设有管控措施，确保AI输出在用于客户相关或受监管工作之前经过审核。",
+      ""
+    ]
+  ],
+  "Logistics & Supply Chain": [
+    [
+      "We track shipments, deliveries, or order status in a system that AI could analyse.",
+      "",
+      "我们在系统中追踪货运、配送或订单状态，AI可对这些数据进行分析。",
+      ""
+    ],
+    [
+      "We plan routes, deliveries, or schedules that AI could help optimise.",
+      "",
+      "我们规划路线、配送或时间表，AI可协助优化。",
+      ""
+    ],
+    [
+      "We manage warehouse, inventory, or replenishment data that could support forecasting.",
+      "",
+      "我们管理仓库、库存或补货数据，这些数据可支持预测。",
+      ""
+    ],
+    [
+      "We handle recurring trade, customs, purchase order, or delivery documents that AI could automate.",
+      "",
+      "我们处理重复性的贸易、海关、采购订单或交付文件，AI可协助自动化。",
+      ""
+    ],
+    [
+      "We collect supplier or partner performance data that AI could use to flag risk or delays.",
+      "",
+      "我们收集供应商或合作伙伴的绩效数据，AI可用于识别风险或延误。",
+      ""
+    ]
+  ],
+  "Food & Beverage / Hospitality": [
+    [
+      "We capture sales, footfall, booking, or order data that could help forecast demand.",
+      "",
+      "我们记录销售、客流、预订或订单数据，可用于预测需求。",
+      ""
+    ],
+    [
+      "We adjust menus, promotions, or staffing based on customer demand patterns.",
+      "",
+      "我们根据客户需求模式调整菜单、促销或人员安排。",
+      ""
+    ],
+    [
+      "We receive customer reviews, feedback, or social media comments that AI could analyse.",
+      "",
+      "我们收到客户评价、反馈或社交媒体评论，AI可协助分析。",
+      ""
+    ],
+    [
+      "We handle recurring customer enquiries about bookings, menus, opening hours, or order status.",
+      "",
+      "我们处理有关预订、菜单、营业时间或订单状态的重复性客户咨询。",
+      ""
+    ],
+    [
+      "We track ingredient, stock, or wastage data that AI could help optimise.",
+      "",
+      "我们追踪食材、库存或浪费数据，AI可协助优化。",
+      ""
+    ]
+  ],
+  "Healthcare & Wellness": [
+    [
+      "We handle recurring appointment, service, or customer/patient enquiries that AI could help triage or draft responses for.",
+      "",
+      "我们处理重复性的预约、服务或客户／患者咨询，AI可协助分流或起草回复。",
+      ""
+    ],
+    [
+      "We manage administrative documents, notes, forms, or reports that AI could summarise or organise.",
+      "",
+      "我们管理行政文件、记录、表格或报告，AI可协助摘要或整理。",
+      ""
+    ],
+    [
+      "We collect feedback, reviews, or service quality data that AI could analyse for improvement themes.",
+      "",
+      "我们收集反馈、评价或服务质量数据，AI可分析其中的改进主题。",
+      ""
+    ],
+    [
+      "We track booking, utilisation, or resource data that AI could use for scheduling or capacity planning.",
+      "",
+      "我们追踪预订、使用率或资源数据，AI可用于排程或容量规划。",
+      ""
+    ],
+    [
+      "We have clear rules for handling personal, sensitive, or health-related information before using AI tools.",
+      "",
+      "在使用AI工具之前，我们对个人、敏感或健康相关信息的处理设有明确规则。",
+      ""
+    ]
+  ],
+  "Education & Training": [
+    [
+      "We create learning materials, slides, quizzes, case studies, or summaries that AI could help draft.",
+      "",
+      "我们制作学习材料、幻灯片、测验、案例研究或摘要，AI可协助起草。",
+      ""
+    ],
+    [
+      "We answer recurring learner or participant enquiries that an AI assistant could support.",
+      "",
+      "我们回应重复性的学习者或参与者咨询，AI助手可提供支持。",
+      ""
+    ],
+    [
+      "We collect learner progress, attendance, feedback, or assessment data that could support learning analytics.",
+      "",
+      "我们收集学习进度、出席、反馈或评估数据，可用于支持学习分析。",
+      ""
+    ],
+    [
+      "We manage training administration tasks that AI could help automate, such as reminders, summaries, or follow-ups.",
+      "",
+      "我们管理培训行政任务，例如提醒、摘要或跟进，AI可协助自动化。",
+      ""
+    ],
+    [
+      "We have guidelines to ensure AI-generated learning content is reviewed for accuracy and appropriateness.",
+      "",
+      "我们设有指引，确保AI生成的学习内容经过准确性与适切性审核。",
+      ""
+    ]
+  ],
+  "Human Resources & Recruitment": [
+    [
+      "We create job descriptions, interview questions, HR announcements, or onboarding materials that AI could help draft.",
+      "",
+      "我们制作职位说明、面试问题、人力资源公告或入职材料，AI可协助起草。",
+      ""
+    ],
+    [
+      "We process employee or candidate information where AI could help organise, summarise, or compare data.",
+      "",
+      "我们处理员工或候选人信息，AI可协助整理、摘要或比较数据。",
+      ""
+    ],
+    [
+      "We receive recurring HR queries on leave, benefits, policies, or onboarding that an AI assistant could support.",
+      "",
+      "我们收到有关休假、福利、政策或入职的重复性人力资源咨询，AI助手可提供支持。",
+      ""
+    ],
+    [
+      "We track employee skills, performance, or training records that could support workforce planning.",
+      "",
+      "我们追踪员工技能、绩效或培训记录，可用于支持人力规划。",
+      ""
+    ],
+    [
+      "We have safeguards to prevent bias, unfair screening, or inappropriate use of AI in people decisions.",
+      "",
+      "我们设有保障措施，防止在人员决策中出现偏见、不公平筛选或不当使用AI。",
+      ""
+    ]
+  ],
+  "Legal, Risk & Compliance": [
+    [
+      "We review recurring contracts, policies, regulations, or compliance documents that AI could help summarise.",
+      "",
+      "我们审阅重复性的合同、政策、法规或合规文件，AI可协助摘要。",
+      ""
+    ],
+    [
+      "We maintain internal templates, clauses, SOPs, or guidance documents that could power a knowledge assistant.",
+      "",
+      "我们维护内部模板、条款、标准作业程序或指导文件，可用于支持知识助手。",
+      ""
+    ],
+    [
+      "We need to classify issues, risks, complaints, or exceptions in a consistent way.",
+      "",
+      "我们需要以一致的方式对问题、风险、投诉或例外情况进行分类。",
+      ""
+    ],
+    [
+      "We have a review process to ensure AI outputs are checked before any legal, compliance, or client-facing use.",
+      "",
+      "我们设有审核流程，确保AI输出在用于法律、合规或客户相关用途之前经过检查。",
+      ""
+    ],
+    [
+      "We handle confidential or regulated information and have clear rules on what can be entered into AI tools.",
+      "",
+      "我们处理机密或受监管信息，并对哪些内容可输入AI工具设有明确规则。",
+      ""
+    ]
+  ],
+  "Marketing, Media & Creative Services": [
+    [
+      "We regularly create marketing copy, social posts, visuals, scripts, or campaign assets that AI could help generate.",
+      "",
+      "我们定期制作营销文案、社交媒体帖文、视觉素材、脚本或活动资产，AI可协助生成。",
+      ""
+    ],
+    [
+      "We use customer, audience, or campaign performance data to refine marketing decisions.",
+      "",
+      "我们使用客户、受众或活动绩效数据来优化营销决策。",
+      ""
+    ],
+    [
+      "We need to personalise content for different customer segments, channels, or buyer journeys.",
+      "",
+      "我们需要为不同客户群体、渠道或购买旅程提供个性化内容。",
+      ""
+    ],
+    [
+      "We test different headlines, creatives, or calls-to-action and could use AI to speed up iteration.",
+      "",
+      "我们测试不同的标题、创意或行动号召，并可使用AI加快迭代。",
+      ""
+    ],
+    [
+      "We have brand, review, and approval guidelines to manage AI-generated content quality.",
+      "",
+      "我们设有品牌、审核与批准指引，以管理AI生成内容的质量。",
+      ""
+    ]
+  ],
+  "Manufacturing & Engineering": [
+    [
+      "We collect machine, equipment, production, or maintenance data that AI could analyse.",
+      "",
+      "我们收集机器、设备、生产或维护数据，AI可进行分析。",
+      ""
+    ],
+    [
+      "We track defects, rework, downtime, or quality issues in a structured way.",
+      "",
+      "我们以结构化方式追踪缺陷、返工、停机或质量问题。",
+      ""
+    ],
+    [
+      "We plan production, manpower, materials, or schedules that AI could help optimise.",
+      "",
+      "我们规划生产、人力、材料或时间表，AI可协助优化。",
+      ""
+    ],
+    [
+      "We maintain technical manuals, SOPs, or engineering documents that AI could help search or summarise.",
+      "",
+      "我们维护技术手册、标准作业程序或工程文件，AI可协助搜索或摘要。",
+      ""
+    ],
+    [
+      "We have enough digital records to identify recurring operational patterns or failure points.",
+      "",
+      "我们拥有足够的数字记录，可识别重复出现的运营模式或故障点。",
+      ""
+    ]
+  ],
+  "Real Estate, Facilities & Built Environment": [
+    [
+      "We track building, facilities, maintenance, or service request data that AI could analyse.",
+      "",
+      "我们追踪建筑、设施、维护或服务请求数据，AI可进行分析。",
+      ""
+    ],
+    [
+      "We receive recurring tenant, client, or customer enquiries that an AI assistant could support.",
+      "",
+      "我们收到重复性的租户、客户或顾客咨询，AI助手可提供支持。",
+      ""
+    ],
+    [
+      "We handle leases, contracts, inspection reports, or property documents that AI could summarise.",
+      "",
+      "我们处理租约、合同、检查报告或房地产文件，AI可协助摘要。",
+      ""
+    ],
+    [
+      "We collect energy, occupancy, or usage data that AI could use to identify efficiency opportunities.",
+      "",
+      "我们收集能源、占用率或使用数据，AI可用于识别提升效率的机会。",
+      ""
+    ],
+    [
+      "We have workflows for escalating urgent or sensitive cases to human staff.",
+      "",
+      "我们设有工作流程，将紧急或敏感个案升级给人工处理。",
+      ""
+    ]
+  ],
+  "Sustainability, ESG & Non-Profit / Social Impact": [
+    [
+      "We collect environmental, social, operational, or impact data that AI could help analyse.",
+      "",
+      "我们收集环境、社会、运营或影响数据，AI可协助分析。",
+      ""
+    ],
+    [
+      "We prepare reports, proposals, grant applications, or ESG updates that AI could help draft or summarise.",
+      "",
+      "我们编制报告、提案、资助申请或ESG更新，AI可协助起草或摘要。",
+      ""
+    ],
+    [
+      "We track energy, waste, emissions, resource usage, or project outcomes that AI could help optimise.",
+      "",
+      "我们追踪能源、废弃物、排放、资源使用或项目成果，AI可协助优化。",
+      ""
+    ],
+    [
+      "We serve beneficiaries, volunteers, members, or stakeholders whose feedback could be analysed for insights.",
+      "",
+      "我们服务受益者、志愿者、成员或利益相关方，他们的反馈可进行分析以获取洞察。",
+      ""
+    ],
+    [
+      "We have governance practices to ensure AI-supported decisions remain transparent, inclusive, and accountable.",
+      "",
+      "我们设有治理实践，确保AI辅助决策保持透明、包容且可问责。",
+      ""
+    ]
+  ]
 };
-
 const RECS = {
  en:{
   "1. Business Case & Leadership":"Nominate a part-time AI champion and hold a 1-hour leadership session to agree 2–3 target business problems. (SkillsFuture)",
@@ -699,25 +1061,186 @@ const RECS = {
 };
 
 const USECASES = {
- en:{
-  "Retail":["Personalised recommendations","Demand forecasting","Customer-service chatbot","AI marketing content","Smart search & pricing"],
-  "Finance":["Document processing","KYC / fraud screening","Client-servicing assistant","Automated reporting","Compliance monitoring"],
-  "Logistics & Supply Chain":["Predictive ETA & delay alerts","Route optimisation","Inventory optimisation","Document automation","Supplier risk analytics"]
- },
- zh:{
-  "Retail":["个性化推荐","需求预测","客服聊天机器人","AI营销内容","智能搜索与定价"],
-  "Finance":["文档处理","KYC / 欺诈筛查","客户服务助手","自动报告","合规监控"],
-  "Logistics & Supply Chain":["预测到达与延误预警","路线优化","库存优化","单证自动化","供应商风险分析"]
- }
+  "en": {
+    "Retail & E-commerce": [
+      "Personalised product recommendations",
+      "Demand forecasting",
+      "Customer-service chatbot",
+      "AI marketing content",
+      "Smart search, pricing, and merchandising"
+    ],
+    "Finance & Professional Services": [
+      "Document processing and summarisation",
+      "Compliance and risk monitoring",
+      "Client-servicing assistant",
+      "Financial reporting and analysis",
+      "Research and advisory support"
+    ],
+    "Logistics & Supply Chain": [
+      "Predictive ETA and delay alerts",
+      "Route optimisation",
+      "Warehouse and inventory optimisation",
+      "Document automation",
+      "Supplier risk analytics"
+    ],
+    "Food & Beverage / Hospitality": [
+      "Demand and footfall forecasting",
+      "AI menu or promotion planning",
+      "Customer review analysis",
+      "Reservation and enquiry chatbot",
+      "Inventory and wastage reduction"
+    ],
+    "Healthcare & Wellness": [
+      "Appointment and patient enquiry assistant",
+      "Clinical admin summarisation",
+      "Customer/patient feedback analysis",
+      "Demand and resource planning",
+      "Compliance-aware document support"
+    ],
+    "Education & Training": [
+      "Learning content generation",
+      "Learner support chatbot",
+      "Assessment feedback support",
+      "Learning analytics",
+      "Training administration automation"
+    ],
+    "Human Resources & Recruitment": [
+      "Job description and interview question drafting",
+      "Candidate screening support",
+      "Employee query assistant",
+      "HR policy summarisation",
+      "Training needs analysis"
+    ],
+    "Legal, Risk & Compliance": [
+      "Contract review support",
+      "Policy and regulation summarisation",
+      "Compliance checklist generation",
+      "Risk issue classification",
+      "Internal knowledge assistant"
+    ],
+    "Marketing, Media & Creative Services": [
+      "Campaign content generation",
+      "Social media calendar planning",
+      "Audience and trend analysis",
+      "Creative concept development",
+      "Campaign performance optimisation"
+    ],
+    "Manufacturing & Engineering": [
+      "Predictive maintenance",
+      "Quality inspection support",
+      "Production planning",
+      "Inventory and parts forecasting",
+      "Technical documentation assistant"
+    ],
+    "Real Estate, Facilities & Built Environment": [
+      "Facilities maintenance prediction",
+      "Tenant or customer enquiry chatbot",
+      "Property document summarisation",
+      "Energy usage optimisation",
+      "Space utilisation analytics"
+    ],
+    "Sustainability, ESG & Non-Profit / Social Impact": [
+      "ESG reporting support",
+      "Energy and waste optimisation",
+      "Grant and proposal drafting",
+      "Beneficiary or stakeholder insights",
+      "Sustainability project planning"
+    ]
+  },
+  "zh": {
+    "Retail & E-commerce": [
+      "个性化产品推荐",
+      "需求预测",
+      "客户服务聊天机器人",
+      "AI营销内容",
+      "智能搜索、定价与商品陈列"
+    ],
+    "Finance & Professional Services": [
+      "文件处理与摘要",
+      "合规与风险监控",
+      "客户服务助手",
+      "财务报告与分析",
+      "研究与顾问支持"
+    ],
+    "Logistics & Supply Chain": [
+      "预测到达时间与延误预警",
+      "路线优化",
+      "仓库与库存优化",
+      "文件自动化",
+      "供应商风险分析"
+    ],
+    "Food & Beverage / Hospitality": [
+      "需求与客流预测",
+      "AI菜单或促销规划",
+      "客户评价分析",
+      "预订与咨询聊天机器人",
+      "库存与浪费减少"
+    ],
+    "Healthcare & Wellness": [
+      "预约与患者咨询助手",
+      "临床行政摘要",
+      "客户／患者反馈分析",
+      "需求与资源规划",
+      "兼顾合规的文件支持"
+    ],
+    "Education & Training": [
+      "学习内容生成",
+      "学习者支持聊天机器人",
+      "评估反馈支持",
+      "学习分析",
+      "培训行政自动化"
+    ],
+    "Human Resources & Recruitment": [
+      "职位说明与面试问题起草",
+      "候选人筛选支持",
+      "员工咨询助手",
+      "人力资源政策摘要",
+      "培训需求分析"
+    ],
+    "Legal, Risk & Compliance": [
+      "合同审阅支持",
+      "政策与法规摘要",
+      "合规检查清单生成",
+      "风险问题分类",
+      "内部知识助手"
+    ],
+    "Marketing, Media & Creative Services": [
+      "营销活动内容生成",
+      "社交媒体日历规划",
+      "受众与趋势分析",
+      "创意概念开发",
+      "营销活动绩效优化"
+    ],
+    "Manufacturing & Engineering": [
+      "预测性维护",
+      "质量检查支持",
+      "生产规划",
+      "库存与零部件预测",
+      "技术文件助手"
+    ],
+    "Real Estate, Facilities & Built Environment": [
+      "设施维护预测",
+      "租户或客户咨询聊天机器人",
+      "房地产文件摘要",
+      "能源使用优化",
+      "空间使用分析"
+    ],
+    "Sustainability, ESG & Non-Profit / Social Impact": [
+      "ESG报告支持",
+      "能源与废弃物优化",
+      "资助申请与提案起草",
+      "受益者或利益相关方洞察",
+      "可持续发展项目规划"
+    ]
+  }
 };
-
 const PILLS = {
  en:["Business Case & Leadership","Use-Case Readiness","Data Readiness","People & Change","Tools & Adoption","Responsible AI & Compliance","Financial Readiness & Funding","Industry Use Cases"],
  zh:["商业价值与领导力","应用场景准备度","数据准备度","人员与变革","工具与采用","负责任AI与合规","资金准备与资助","行业应用场景"]
 };
 
 /* ================= STATE ================= */
-let industryKey="Retail", scopeKey="Overall Company", answers={}, items=[], radarChart=null, hasResults=false, lastResult=null;
+let industryKey="Retail & E-commerce", scopeKey="Overall Company", answers={}, items=[], radarChart=null, hasResults=false, lastResult=null;
 const PKEYS=["1. Business Case & Leadership","2. Use-Case Readiness","3. Data Readiness","4. People & Change Readiness","5. Tools & Adoption","6. Responsible AI & Compliance","7. Financial Readiness & Funding","8. Industry-Specific Use Cases"];
 
 function stageIndex(p){const S=STAGES.en;for(let i=0;i<S.length;i++){if(p>=S[i][1]&&p<=S[i][2])return i;}return 0;}
@@ -776,7 +1299,7 @@ function applyStaticText(){
 }
 function rebuildIndustryDropdown(){
   const sel=document.getElementById('industry');
-  const previousValue=industryKey || "Retail";
+  const previousValue=industryKey || "Retail & E-commerce";
   sel.innerHTML="";
   const industryOptions=INDUSTRIES[LANG] || INDUSTRIES.en;
   industryOptions.forEach(lbl=>{
