@@ -286,6 +286,7 @@
   .btn.ctawhite:hover{background:var(--gold-pale);border-color:var(--gold-pale)}
   .footer-note{color:var(--grey);font-size:12.5px;margin-top:18px;border-top:1px solid var(--border);padding-top:12px}
   .devclause{background:var(--surface-muted);border:1px solid var(--border);border-radius:4px;padding:14px;font-size:12.5px;color:var(--text-secondary);margin-top:18px;display:flex;gap:14px;align-items:center}
+  #devClauseText{white-space:pre-line}
   .devclause .logomini{flex:0 0 auto;background:#fff;padding:8px;border-radius:4px;border:1px solid var(--border)}
   .devclause .logomini img{display:block;max-height:48px;width:auto}
   .site-footer{background:var(--navy-deep);color:#fff;margin-top:48px;padding:28px 0;position:relative}
@@ -347,19 +348,19 @@
     <div id="introPills" style="margin:10px 0 16px"></div>
     <div class="field">
       <label id="lblIndustry"></label>
-      <select id="industry"></select>
+      <select id="industry" required></select>
     </div>
     <div class="field">
       <label id="lblScope"></label>
-      <select id="scope"></select>
+      <select id="scope" required></select>
     </div>
     <div class="field">
       <label id="lblCompany"></label>
-      <input type="text" id="company">
+      <input type="text" id="company" required>
     </div>
     <div class="field">
       <label id="lblEmail"></label>
-      <input type="email" id="email">
+      <input type="email" id="email" required>
     </div>
     <div class="field consent-field">
       <label id="lblEmailPreferences"></label>
@@ -476,6 +477,11 @@ function smuaLogo(h){
    CONTACT / BOOKING LINK (workshop / consultancy enquiries)
    ===================================================================== */
 const CTA_LINK = "https://academy.smu.edu.sg/contact-us";
+/* =====================================================================
+   ASSESSMENT VERSION
+   Update this value only when a new assessment version is released.
+   ===================================================================== */
+const ASSESSMENT_VERSION = "v1.0";
 
 /* =====================================================================
    POWER AUTOMATE URL — for official capture into SharePoint List.
@@ -505,7 +511,7 @@ const T = {
   introSub:"A quick diagnostic across 7 core pillars plus a use-case overlay for your industry.",
   lblIndustry:"Select your industry:",
   lblScope:"Assessing for:",
-  lblCompany:"Company name (optional):",
+  lblCompany:"Company name:",
   lblEmail:"Email address:",
   lblEmailPreferences:"Email preferences:",
   marketingConsentText:"I would like to receive course announcements and marketing communications from SMU Academy via email.",
@@ -553,7 +559,7 @@ const T = {
   introSub:"快速评估七大核心支柱，并针对您所在行业提供应用场景补充问题。",
   lblIndustry:"请选择您的行业：",
   lblScope:"评估范围：",
-  lblCompany:"公司名称（选填）：",
+  lblCompany:"公司名称：",
   lblEmail:"电邮地址：",
   lblEmailPreferences:"电邮偏好：",
   marketingConsentText:"接收不定期产品更新和公告",
@@ -1240,7 +1246,7 @@ const PILLS = {
 };
 
 /* ================= STATE ================= */
-let industryKey="Retail & E-commerce", scopeKey="Overall Company", answers={}, items=[], radarChart=null, hasResults=false, lastResult=null;
+let industryKey="", scopeKey="", answers={}, items=[], radarChart=null, hasResults=false, lastResult=null;
 const PKEYS=["1. Business Case & Leadership","2. Use-Case Readiness","3. Data Readiness","4. People & Change Readiness","5. Tools & Adoption","6. Responsible AI & Compliance","7. Financial Readiness & Funding","8. Industry-Specific Use Cases"];
 
 function stageIndex(p){const S=STAGES.en;for(let i=0;i<S.length;i++){if(p>=S[i][1]&&p<=S[i][2])return i;}return 0;}
@@ -1299,8 +1305,16 @@ function applyStaticText(){
 }
 function rebuildIndustryDropdown(){
   const sel=document.getElementById('industry');
-  const previousValue=industryKey || "Retail & E-commerce";
+  const previousValue=industryKey || "";
   sel.innerHTML="";
+
+  const placeholder=document.createElement('option');
+  placeholder.value="";
+  placeholder.textContent=LANG==='zh' ? "请选择您的行业" : "Please select your industry";
+  placeholder.disabled=true;
+  placeholder.selected=!previousValue;
+  sel.appendChild(placeholder);
+
   const industryOptions=INDUSTRIES[LANG] || INDUSTRIES.en;
   industryOptions.forEach(lbl=>{
     const key=IND_KEY[lbl] || lbl;
@@ -1310,12 +1324,19 @@ function rebuildIndustryDropdown(){
     if(key===previousValue)o.selected=true;
     sel.appendChild(o);
   });
-  if(!sel.value && sel.options.length>0){sel.selectedIndex=0;industryKey=sel.value;}
 }
 function rebuildScopeDropdown(){
   const sel=document.getElementById('scope');
-  const previousValue=scopeKey || "Overall Company";
+  const previousValue=scopeKey || "";
   sel.innerHTML="";
+
+  const placeholder=document.createElement('option');
+  placeholder.value="";
+  placeholder.textContent=LANG==='zh' ? "请选择评估范围" : "Please select what you are assessing for";
+  placeholder.disabled=true;
+  placeholder.selected=!previousValue;
+  sel.appendChild(placeholder);
+
   const scopeOptions=SCOPES[LANG] || SCOPES.en;
   scopeOptions.forEach((lbl,i)=>{
     const key=SCOPES.en[i];
@@ -1325,26 +1346,66 @@ function rebuildScopeDropdown(){
     if(key===previousValue)o.selected=true;
     sel.appendChild(o);
   });
-  if(!sel.value && sel.options.length>0){sel.selectedIndex=0;scopeKey=sel.value;}
 }
 function ctaClick(){ window.open(CTA_LINK, '_blank'); }
 
+/* =====================================================================
+   ENGLISH PLAIN-TEXT OUTPUTS
+   Existing JSON outputs are retained for Power BI and future processing.
+   ===================================================================== */
+const ANSWER_LABELS_EN = {
+  0:"Not at all / Don't know",
+  1:"Just starting / Ad hoc",
+  2:"Partially in place",
+  3:"Mostly in place",
+  4:"Fully / Advanced"
+};
+function buildScoresText(scores){
+  return PKEYS.map(pillar=>`${pillar}: ${scores[pillar]}%`).join('\n');
+}
+function buildAnswersText(){
+  let currentPillar="";
+  const lines=[];
+  items.forEach((item,index)=>{
+    if(item.pkey!==currentPillar){
+      if(lines.length>0)lines.push("","--------------------------------------------------","");
+      currentPillar=item.pkey;
+      lines.push(currentPillar,"");
+    }
+    const numericAnswer=answers[index];
+    lines.push(`Question: ${item.en}`);
+    lines.push(`Answer: ${numericAnswer} - ${ANSWER_LABELS_EN[numericAnswer]}`,"");
+  });
+  return lines.join('\n').trim();
+}
 /* Submit assessment to SharePoint via Power Automate. */
 async function submitAssessmentToSharePoint(){
   const email=document.getElementById('email').value.trim();
   if(!email){
     alert(LANG==='zh' ? "请填写电邮地址后再提交。" : "Please enter your email address before submitting.");
+    document.getElementById('email').focus();
     return false;
   }
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     alert(LANG==='zh' ? "请输入有效的电邮地址。" : "Please enter a valid email address.");
+    document.getElementById('email').focus();
     return false;
   }
   const {scores,overall}=computeScores();
   const company=document.getElementById('company').value.trim();
   const marketingConsent=document.getElementById('marketingConsent').checked;
+  const answersJSON=items.map((item,index)=>(
+    {
+      pillar:item.pkey,
+      questionEnglish:item.en,
+      questionChinese:item.zh,
+      answer:answers[index],
+      answerEnglish:ANSWER_LABELS_EN[answers[index]]
+    }
+  ));
   const payload={
     submittedAt:new Date().toISOString(),
+    assessmentVersion:ASSESSMENT_VERSION,
     company:company,
     email:email,
     marketingConsent:marketingConsent,
@@ -1356,7 +1417,9 @@ async function submitAssessmentToSharePoint(){
     overallScore:overall,
     maturityStage:STAGES.en[stageIndex(overall)][0],
     scores:scores,
-    answers:items.map((item,index)=>({pillar:item.pkey,questionEnglish:item.en,questionChinese:item.zh,answer:answers[index]}))
+    answers:answersJSON,
+    scoresText:buildScoresText(scores),
+    answersText:buildAnswersText()
   };
   if(!POWER_AUTOMATE_URL || POWER_AUTOMATE_URL.indexOf("PASTE_")===0){
     console.warn("Power Automate URL is not configured. Payload preview:",payload);
@@ -1364,13 +1427,12 @@ async function submitAssessmentToSharePoint(){
     return true;
   }
   try{
-   await fetch(POWER_AUTOMATE_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(payload)
-});
+    const response=await fetch(POWER_AUTOMATE_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
+    });
+    if(!response.ok)throw new Error(`Power Automate returned HTTP ${response.status}`);
     return true;
   }catch(error){
     console.error("SharePoint submission failed:",error);
@@ -1388,17 +1450,54 @@ function buildItems(){
 
 /* ================= FLOW ================= */
 function start(){
-  industryKey=document.getElementById('industry').value;
-  scopeKey=document.getElementById('scope').value;
-  answers={};hasResults=false;buildItems();
+  const industryField=document.getElementById('industry');
+  const scopeField=document.getElementById('scope');
+  const companyField=document.getElementById('company');
+  const emailField=document.getElementById('email');
+  const selectedIndustry=industryField.value.trim();
+  const selectedScope=scopeField.value.trim();
+  const company=companyField.value.trim();
+  const email=emailField.value.trim();
+
+  if(!selectedIndustry){
+    alert(LANG==='zh' ? "请选择您的行业。" : "Please select your industry.");
+    industryField.focus();
+    return;
+  }
+  if(!selectedScope){
+    alert(LANG==='zh' ? "请选择评估范围。" : "Please select what the assessment is for.");
+    scopeField.focus();
+    return;
+  }
+  if(!company){
+    alert(LANG==='zh' ? "请填写公司名称。" : "Please enter your company name.");
+    companyField.focus();
+    return;
+  }
+  if(!email){
+    alert(LANG==='zh' ? "请填写电邮地址。" : "Please enter your email address.");
+    emailField.focus();
+    return;
+  }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    alert(LANG==='zh' ? "请输入有效的电邮地址。" : "Please enter a valid email address.");
+    emailField.focus();
+    return;
+  }
+
+  industryKey=selectedIndustry;
+  scopeKey=selectedScope;
+  answers={};
+  hasResults=false;
+  buildItems();
   document.getElementById('intro').classList.add('hidden');
-  const hero = document.getElementById('hero');
-if (hero) {
-    hero.classList.add('hidden');
-}
+  const hero=document.getElementById('hero');
+  if(hero)hero.classList.add('hidden');
   document.getElementById('results').classList.add('hidden');
   document.getElementById('quiz').classList.remove('hidden');
-  renderQuestions();updateProgress();window.scrollTo({top:0,behavior:'smooth'});
+  renderQuestions();
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 function backToIntro(){document.getElementById('quiz').classList.add('hidden');document.getElementById('intro').classList.remove('hidden');const hero = document.getElementById('hero'); if (hero) {     hero.classList.remove('hidden'); }window.scrollTo({top:0,behavior:'smooth'});}
 function industryLabel(){const i=INDUSTRIES.en.indexOf(industryKey);return INDUSTRIES[LANG][i>=0?i:0];}
