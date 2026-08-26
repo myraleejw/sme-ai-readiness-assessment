@@ -374,6 +374,15 @@
     <div class="row" style="margin-top:20px">
       <button class="btn" id="btnStart" onclick="start()"></button>
     </div>
+    <div class="objective" style="margin-top:20px">
+      <h3 id="consentClauseTitle"></h3>
+      <p id="consentClauseText1"></p>
+      <p id="consentClauseText2" style="margin-top:10px"></p>
+      <p id="consentClauseText3" style="margin-top:10px"></p>
+      <p style="margin-top:10px">
+        <a href="https://www.smu.edu.sg/personal-data-protection-statement" target="_blank" rel="noopener noreferrer" id="consentClauseLink"></a>
+      </p>
+    </div>
     <div class="devclause">
       <span class="logomini" id="logoClause"></span>
       <span id="devClauseText"></span>
@@ -515,6 +524,11 @@ const T = {
   lblEmail:"Email address:",
   lblEmailPreferences:"Email preferences:",
   marketingConsentText:"I would like to receive course announcements and marketing communications from SMU Academy via email.",
+  consentClauseTitle:"Consent Clause",
+  consentClauseText1:"By submitting this assessment, you hereby agree to the collection, use and disclosure of your personal data by Singapore Management University ('SMU') for the purposes of administering the assessment, providing follow-up support, sharing assessment-related recommendations, and communicating with you regarding the outcomes of your assessment ('Purpose').",
+  consentClauseText2:"SMU respects the privacy of individuals and recognises the importance of the personal data you have entrusted with us and believe that it is our responsibility to properly manage, protect, process, use and disclose your personal data. We will collect, use, disclose and protect your personal data in accordance with the Singapore Personal Data Protection Act 2012. If you would like to find out more about SMU's Personal Data Protection Statement, please click the link below.",
+  consentClauseText3:"You may withdraw your consent for the collection, use and disclosure of your personal data for the Purpose, at any point in time, by sending your request to enquiries.academy@smu.edu.sg. However, please note that this may affect our administration of the Purpose to you. Your withdrawal will be effective within 30 (thirty) days of such a request.",
+  consentClauseLink:"View SMU Personal Data Protection Statement",
   companyPH:"e.g. Bloom & Co.",
   emailPH:"e.g. name@company.com",
   btnStart:"Start Assessment →",
@@ -562,7 +576,12 @@ const T = {
   lblCompany:"公司名称：",
   lblEmail:"电邮地址：",
   lblEmailPreferences:"电邮偏好：",
-  marketingConsentText:"接收不定期产品更新和公告",
+  marketingConsentText:"我愿意接收由 SMU Academy 发送的课程资讯、项目更新、活动邀请及其他营销通讯。",
+  consentClauseTitle:"同意条款",
+  consentClauseText1:"提交本评估即表示您同意新加坡管理大学（Singapore Management University，简称“SMU”）为管理本评估、提供后续支持、分享与评估相关的建议，以及就您的评估结果与您联系（统称“目的”），收集、使用及披露您的个人资料。",
+  consentClauseText2:"SMU 尊重个人隐私，并重视您所委托予我们的个人资料。我们相信妥善管理、保护、处理、使用及披露您的个人资料是我们的责任。SMU 将依据新加坡《2012年个人资料保护法》（Personal Data Protection Act 2012）收集、使用、披露及保护您的个人资料。如欲了解更多有关 SMU 个人资料保护声明的信息，请点击下方链接。",
+  consentClauseText3:"您可随时通过发送电邮至 enquiries.academy@smu.edu.sg，撤回对 SMU 为上述目的收集、使用及披露您个人资料的同意。但请注意，这可能会影响我们向您提供与上述目的相关服务或支持的能力。您的撤回请求将在收到后30（三十）日内生效。",
+  consentClauseLink:"查看 SMU 个人资料保护声明",
   companyPH:"例如：Bloom & Co.",
   emailPH:"例如：name@company.com",
   btnStart:"开始评估 →",
@@ -1280,6 +1299,11 @@ function applyStaticText(){
   document.getElementById('email').placeholder=t.emailPH;
   document.getElementById('lblEmailPreferences').textContent=t.lblEmailPreferences;
   document.getElementById('marketingConsentText').textContent=t.marketingConsentText;
+  document.getElementById('consentClauseTitle').textContent=t.consentClauseTitle;
+  document.getElementById('consentClauseText1').textContent=t.consentClauseText1;
+  document.getElementById('consentClauseText2').textContent=t.consentClauseText2;
+  document.getElementById('consentClauseText3').textContent=t.consentClauseText3;
+  document.getElementById('consentClauseLink').textContent=t.consentClauseLink;
   document.getElementById('btnStart').textContent=t.btnStart;
   document.getElementById('devClauseText').textContent=t.devClause;
   document.getElementById('introFoot').textContent=t.introFoot;
