@@ -122,9 +122,6 @@
     color:var(--gold-dark);
     font-size:13.5px;
     margin:-10px 0 18px;
-    display:flex;
-    align-items:center;
-    gap:6px;
   }
   .objective{
     background:var(--surface-muted);
@@ -178,6 +175,9 @@
     font-size:15px;
     font-weight:600;
     cursor:pointer;
+    display:inline-block;
+    text-align:center;
+    text-decoration:none;
     transition:background .15s,border-color .15s,transform .15s;
   }
   .btn:hover{background:var(--gold-hover);border-color:var(--gold-hover);transform:translateY(-1px)}
@@ -189,7 +189,7 @@
     border:none;
     color:var(--gold-dark);
     text-decoration:underline;
-    padding:6px 0;
+    padding:4px 0;
     font-size:13.5px;
   }
   .btn.link:hover{color:var(--navy);transform:none;background:none}
@@ -213,15 +213,30 @@
   .consent-box{max-width:620px;font-size:14px;color:var(--text-secondary);padding-top:2px}
   .consent-box label{display:flex;align-items:flex-start;gap:10px;min-width:0;color:var(--text-secondary);font-weight:400}
   .consent-box input[type=checkbox]{margin-top:4px;flex:0 0 auto}
-  .progress{height:9px;background:#e9ecf2;border-radius:999px;overflow:hidden;margin:14px 0 4px}
+
+  /* ---------- STICKY PROGRESS BAR ---------- */
+  .stickybar{
+    position:sticky;
+    top:0;
+    z-index:30;
+    background:var(--surface);
+    margin:-32px -32px 18px;
+    padding:18px 32px 12px;
+    border-bottom:1px solid var(--border);
+    border-radius:4px 4px 0 0;
+  }
+  .stickybar h2{font-size:19px;margin:0;line-height:1.3}
+  .stickybar .counter{color:var(--grey);font-size:14px;white-space:nowrap}
+  .progress{height:9px;background:#e9ecf2;border-radius:999px;overflow:hidden;margin:12px 0 0}
   .progress > div{height:100%;background:linear-gradient(90deg,var(--gold),var(--navy));width:0;transition:.3s}
+
   .qcard{
     border:1px solid var(--border);
     border-radius:4px;
     padding:18px 18px 10px;
     margin-bottom:14px;
     background:var(--surface-muted);
-    scroll-margin-top:24px;
+    scroll-margin-top:120px;
   }
   .qcard.industry{background:var(--gold-pale);border-color:var(--gold-light)}
   .qcard.missing{border-color:var(--red);box-shadow:0 0 0 2px rgba(214,69,69,.15)}
@@ -254,6 +269,7 @@
     padding-left:12px;
     text-transform:uppercase;
     letter-spacing:.02em;
+    scroll-margin-top:120px;
   }
   .gauge-wrap{display:flex;gap:32px;flex-wrap:wrap;align-items:center;justify-content:center}
   .gauge{position:relative;width:170px;height:170px}
@@ -289,6 +305,8 @@
   .devclause{background:var(--surface-muted);border:1px solid var(--border);border-radius:4px;padding:16px 18px;font-size:12.5px;color:var(--text-secondary);margin-top:18px}
   #devClauseText{white-space:pre-line}
   .hidden{display:none!important}
+  .printonly{display:none}
+
   @media (max-width:760px){
     .wrap{padding-left:16px;padding-right:16px}
     header.top .wrap{min-height:auto;padding:0 16px 16px}
@@ -300,6 +318,9 @@
     .langtoggle{align-self:flex-start}
     h2{font-size:28px}
     .card{padding:24px}
+    .stickybar{margin:-24px -24px 16px;padding:14px 24px 10px}
+    .stickybar h2{font-size:16px}
+    .qcard{scroll-margin-top:150px}
     .barrow{grid-template-columns:1fr;gap:6px}
     select,input[type=text],input[type=email]{width:100%;min-width:0}
     .printhint{margin-top:0}
@@ -315,6 +336,7 @@
       print-color-adjust:exact;
     }
     .langtoggle,.noprint,#intro,#quiz,.errbar,.printhint{display:none!important}
+    .printonly{display:block!important}
     header.top{
       background:#fff!important;
       border-bottom:2px solid var(--gold);
@@ -377,7 +399,23 @@
     }
     .usecases span{border:1px solid var(--gold-light)}
     .ctabox{page-break-inside:avoid;break-inside:avoid;padding:18px;margin-top:18px}
-    .ctabox .row{display:none!important}
+
+    /* Keep the CTA link visible and clickable inside the saved PDF */
+    .ctabox .row{display:flex!important}
+    a.btn.ctawhite{
+      background:#fff!important;
+      color:var(--navy)!important;
+      border:1px solid var(--navy)!important;
+      text-decoration:none!important;
+      padding:8px 16px;
+      font-size:10pt;
+    }
+    .ctalink-note{
+      color:#F8F9FA;
+      font-size:9pt;
+      margin-top:10px;
+      word-break:break-all;
+    }
     .footer-note{margin-top:14px;page-break-inside:avoid;break-inside:avoid}
     a[href]:after{content:""}
   }
@@ -462,12 +500,12 @@
 
   <!-- QUIZ -->
   <div class="card hidden" id="quiz">
-    <div class="row between">
-      <h2 id="quizTitle"></h2>
-      <span class="sub" style="margin:0" id="counter"></span>
-    </div>
-    <div class="progress"><div id="pbar"></div></div>
-    <div class="row" style="margin-top:6px">
+    <div class="stickybar">
+      <div class="row between">
+        <h2 id="quizTitle"></h2>
+        <span class="counter" id="counter"></span>
+      </div>
+      <div class="progress"><div id="pbar"></div></div>
       <button class="btn link hidden" id="btnJump" type="button"></button>
     </div>
     <div id="questions"></div>
@@ -528,8 +566,9 @@
       <p id="ctaP"></p>
       <div class="ctagrid" id="ctaGrid"></div>
       <div class="row">
-        <button class="btn ctawhite" id="ctaBtn1" type="button"></button>
+        <a class="btn ctawhite" id="ctaBtn1" href="https://academy.smu.edu.sg/contact-us" target="_blank" rel="noopener noreferrer"></a>
       </div>
+      <p class="ctalink-note printonly" id="ctaLinkNote"></p>
     </div>
 
     <p class="footer-note" id="resFoot"></p>
@@ -576,11 +615,11 @@ function renderLogo(h){
   box.appendChild(img);
 }
 
-/* Contact / booking link */
+/* Contact / booking link — used for the CTA anchor (clickable in the saved PDF) */
 var CTA_LINK = "https://academy.smu.edu.sg/contact-us";
 
 /* Assessment version */
-var ASSESSMENT_VERSION = "v2.5";
+var ASSESSMENT_VERSION = "v2.6";
 
 /* Power Automate endpoint — captures into SharePoint */
 var POWER_AUTOMATE_URL = "https://defaultc98a79ca5a9a4791a243f06afd6746.4d.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c13996eef56447c78f51e75b0fe540c9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=VyF84Csnx3S9W4VesCdZ8FkY6is_tUhoGLepfg__VNs";
@@ -608,13 +647,13 @@ var LANG = 'en';
 
 var SCOPES = {
  en:["Overall Organisation","Sales","Marketing","Operations","Finance","Human Resources","IT / Technology","Customer Service","Procurement / Supply Chain","Other"],
- zh:["整体组织","销售","市场营销","运营","财务","人力资源","IT / 技术","客户服务","采购 / 供应链","其他"]
+ zh:["整体机构","销售","市场营销","运营","财务","人力资源","资讯科技／技术","客户服务","采购／供应链","其他"]
 };
 
 /* Partner referral sources only. Canonical EN keys are stored in SharePoint. */
 var REFERRERS = {
  en:["Singapore Computer Society","SME Centre @ SCCCI"],
- zh:["新加坡电脑学会","SME Centre @ SCCCI（新加坡中华总商会企业中心）"]
+ zh:["新加坡电脑学会（Singapore Computer Society）","新加坡中华总商会企业中心（SME Centre @ SCCCI）"]
 };
 
 var T = {
@@ -648,6 +687,9 @@ var T = {
   counter:function(d,t){ return d + " / " + t + " answered"; },
   jumpBtn:function(n){ return n + " question" + (n===1?"":"s") + " still unanswered — go to the first one →"; },
   btnBack:"← Change details",
+  backWarn:function(n){
+    return "Going back will clear the " + n + " answer" + (n===1?"":"s") + " you have entered so far, and you will need to complete the assessment again.\n\nAre you sure you want to change your details?";
+  },
   seeResults:"Submit and see my results →",
   resTitle:"Your AI Adoption Readiness Results",
   resSub:function(ind,scope,date){ return "Industry: " + ind + "  ·  Scope: " + scope + "  ·  " + date; },
@@ -669,60 +711,65 @@ var T = {
     ["Corporate Training","Upskill staff with structured, funding-eligible AI training programmes."]
   ],
   ctaBtn1:"Learn More & Connect",
+  ctaLinkNote:function(url){ return "Contact SMU Academy: " + url; },
   resFoot:"This is a self-assessment guide, not professional advice. Developed and periodically enhanced by SMU Academy. Recommendations are mapped to relevant government support schemes where applicable.",
   radarLabel:"Readiness %"
  },
  zh:{
   appTitle:"人工智能应用评估",
-  introH:"贵机构为人工智能做好准备了吗？",
+  introH:"贵机构准备好应用人工智能了吗？",
   objH:"关于本工具",
-  objP:"本自评工具帮助企业管理者快速了解机构在七大核心领域及行业专属应用场景上采用人工智能的准备程度。约15分钟内，您将获得准备度评分、成熟度阶段，以及一份分优先次序、切实可行的行动路线图——让您清楚知道从何入手，并有信心地向前推进。",
-  introSub:"快速评估七大核心支柱，并针对您所在行业提供应用场景补充问题。",
+  objP:"本自评工具帮助企业管理者快速了解贵机构在七大核心领域及行业专属应用场景方面的人工智能应用准备程度。整个评估约需15分钟，完成后您将获得准备度评分、成熟度阶段，以及一份按优先次序排列、切实可行的行动建议，让您清楚知道应从何处着手，并有信心推进下一步。",
+  introSub:"快速评估七大核心支柱，并针对贵机构所属行业提供应用场景补充问题。",
   pillarListLabel:"本评估涵盖的范围",
-  lblIndustry:"请选择您的行业：",
+  lblIndustry:"请选择贵机构所属行业：",
   lblScope:"评估范围：",
   lblCompany:"机构名称：",
   lblEmail:"电邮地址：",
   lblReferredBy:"推荐来源：",
   referredByOptional:"（选填）",
   lblEmailPreferences:"电邮偏好：",
-  marketingConsentText:"我愿意接收由新大专业进修学院（SMU Academy）发送的课程资讯、项目更新、活动邀请及其他营销通讯。",
+  marketingConsentText:"我愿意通过电邮接收新大专业进修学院（SMU Academy）的课程资讯及市场推广信息。",
   consentClauseTitle:"同意条款",
-  consentClauseText1:"提交本评估即表示您同意新加坡管理大学（Singapore Management University，简称“SMU”）为管理本评估、提供后续支持、分享与评估相关的建议，以及就您的评估结果与您联系（统称“目的”），收集、使用及披露您的个人资料。",
-  consentClauseText2:"SMU 尊重个人隐私，并重视您所委托予我们的个人资料。我们相信妥善管理、保护、处理、使用及披露您的个人资料是我们的责任。SMU 将依据新加坡《2012年个人资料保护法》（Personal Data Protection Act 2012）收集、使用、披露及保护您的个人资料。如欲了解更多有关 SMU 个人资料保护声明的信息，请点击下方链接。",
-  consentClauseText3:"您可随时通过发送电邮至 enquiries.academy@smu.edu.sg，撤回对 SMU 为上述目的收集、使用及披露您个人资料的同意。但请注意，这可能会影响我们向您提供与上述目的相关服务或支持的能力。您的撤回请求将在收到后30（三十）日内生效。",
+  consentClauseText1:"提交本评估即表示您同意新加坡管理大学（Singapore Management University，简称“SMU”）为管理本评估、提供后续支持、分享与评估相关的建议，以及就评估结果与您沟通等用途（统称“上述用途”），收集、使用及披露您的个人资料。",
+  consentClauseText2:"SMU 尊重个人隐私，并重视您所委托予我们的个人资料。我们认为妥善管理、保护、处理、使用及披露您的个人资料是我们的责任。SMU 将依据新加坡《2012年个人资料保护法》（Personal Data Protection Act 2012）收集、使用、披露及保护您的个人资料。如欲进一步了解 SMU 的个人资料保护声明，请点击下方链接。",
+  consentClauseText3:"您可随时发送电邮至 enquiries.academy@smu.edu.sg，撤回对 SMU 为上述用途收集、使用及披露您个人资料的同意。但请注意，撤回同意可能影响我们为您提供相关服务或支持。撤回请求将在我们收到后三十（30）日内生效。",
   consentClauseLink:"查看 SMU 个人资料保护声明",
   companyPH:"例如：Bloom & Co.",
   emailPH:"例如：name@company.com",
   referPH:"请选择（选填）",
   btnStart:"开始评估 →",
-  devClause:"本人工智能应用评估工具由新加坡管理大学新大专业进修学院（SMU Academy）开发，旨在为各类机构提供实用的学习与参考建议。评估结果仅反映机构当前人工智能准备程度的参考性概况，并提出可考虑改进的领域。评估结果旨在支持学习、规划与讨论，不构成专业、技术、法律或监管意见。\n\n随着人工智能技术、行业实践及机构需求的持续发展，本评估工具将定期检讨与优化更新。我们欢迎您提供宝贵意见与建议，帮助我们持续改进评估内容，并确保其对企业保持实际价值与相关性。",
+  devClause:"本人工智能应用评估工具由新大专业进修学院（SMU Academy）开发，旨在为各类机构提供实用的学习与参考工具。评估结果仅反映贵机构当前人工智能准备程度的概况，并提出可考虑改进的方向。评估结果旨在支持学习、规划与讨论，不构成专业、技术、法律或监管意见。\n\n随着人工智能技术、行业实践及机构需求的不断演变，本评估工具将定期检讨与优化。我们欢迎您提出宝贵意见与建议，协助我们持续改进评估内容，确保其对企业保持实际价值与相关性。",
   introFoot:"相关建议将对接适用的政府支持计划。",
   quizTitle:"评估 · ",
-  counter:function(d,t){ return "已回答 " + d + " / " + t; },
-  jumpBtn:function(n){ return "尚有 " + n + " 题未作答 — 前往第一题 →"; },
-  btnBack:"← 更改信息",
+  counter:function(d,t){ return "已回答 " + d + " / " + t + " 题"; },
+  jumpBtn:function(n){ return "尚有 " + n + " 题未作答 — 前往第一道未作答的题目 →"; },
+  btnBack:"← 更改填写信息",
+  backWarn:function(n){
+    return "返回上一页将清除您已作答的 " + n + " 道题目，届时需要重新完成评估。\n\n确定要更改填写信息吗？";
+  },
   seeResults:"提交并查看结果 →",
   resTitle:"您的人工智能应用准备度结果",
   resSub:function(ind,scope,date){ return "行业：" + ind + "  ·  范围：" + scope + "  ·  " + date; },
-  printHint:"🖨 请使用「打印 / 保存PDF」保存结果副本——结果不会以电邮发送给您。",
+  printHint:"🖨 请使用“打印 / 保存PDF”保存结果副本——本工具不会将结果发送至您的电邮。",
   btnRetake:"↺ 重新评估",
   btnPrint:"🖨 打印 / 保存PDF",
   ovLbl:"整体准备度",
-  youAreHere:"  ◀ 您在此",
+  youAreHere:"  ◀ 当前阶段",
   barsH:"各支柱准备度",
   radarH:"准备度概览",
   prioH:"您的三大优先事项",
-  prioSub:"请优先处理这些——它们是您得分最低的支柱。",
-  ucH:"您所选行业的常见人工智能应用场景",
-  ctaH:"准备好与新大专业进修学院一起迈出下一步了吗？",
-  ctaP:"将评估结果化为行动。新大专业进修学院（SMU Academy）与各类机构携手，通过实操工作坊、量身定制的咨询以及员工培训来建立人工智能能力，并协助对接相关政府支持。",
+  prioSub:"建议优先处理以下范畴——这些是贵机构得分最低的支柱。",
+  ucH:"贵机构所属行业的常见人工智能应用场景",
+  ctaH:"准备好与新大专业进修学院迈出下一步了吗？",
+  ctaP:"将评估结果化为行动。新大专业进修学院（SMU Academy）与各类机构携手，通过实操工作坊、量身定制的咨询以及员工培训建立人工智能能力，并协助对接相关政府支持计划。",
   ctaItems:[
-    ["人工智能工作坊","实操性强的课程，让您的团队将AI应用于真实业务任务。"],
-    ["顾问与咨询","量身定制的指导，帮助确定应用场景优先次序并制定AI路线图。"],
-    ["企业培训","通过系统化、符合资助条件的AI培训项目提升员工技能。"]
+    ["人工智能工作坊","实操性强的课程，让团队将人工智能应用于实际业务任务。"],
+    ["顾问与咨询","量身定制的指导，协助厘清应用场景的优先次序并制定人工智能路线图。"],
+    ["企业培训","通过系统化、符合资助条件的人工智能培训项目提升员工技能。"]
   ],
   ctaBtn1:"了解更多并联系我们",
+  ctaLinkNote:function(url){ return "联系新大专业进修学院：" + url; },
   resFoot:"本工具为自我评估指南，并非专业咨询意见。由新大专业进修学院（SMU Academy）开发并定期更新完善。相关建议将对接适用的政府支持计划。",
   radarLabel:"准备度 %"
  }
@@ -730,148 +777,148 @@ var T = {
 
 var INDUSTRIES = {
  en:["Retail & E-commerce","Finance & Professional Services","Logistics & Supply Chain","Food & Beverage / Hospitality","Healthcare & Wellness","Education & Training","Human Resources & Recruitment","Legal, Risk & Compliance","Marketing, Media & Creative Services","Manufacturing & Engineering","Real Estate, Facilities & Built Environment","Sustainability, ESG & Non-Profit / Social Impact"],
- zh:["零售与电子商务","金融与专业服务","物流与供应链","餐饮与酒店服务","医疗保健与健康服务","教育与培训","人力资源与招聘","法律、风险与合规","市场营销、媒体与创意服务","制造与工程","房地产、设施与建筑环境","可持续发展、ESG与非营利／社会影响"]
+ zh:["零售与电子商务","金融与专业服务","物流与供应链","餐饮与酒店业","医疗保健与健康服务","教育与培训","人力资源与招聘","法律、风险与合规","市场营销、媒体与创意服务","制造与工程","房地产、设施与建筑环境","可持续发展、ESG与非营利／社会影响"]
 };
 
 var PILLARS = {
  en:["1. Business Case & Leadership","2. Use-Case Readiness","3. Data Readiness","4. People & Change Readiness","5. Tools & Adoption","6. Responsible AI & Compliance","7. Financial Readiness & Funding","8. Industry-Specific Use Cases"],
- zh:["1. 商业价值与领导力","2. 应用场景准备度","3. 数据准备度","4. 人员与变革准备度","5. 工具与采用","6. 负责任AI与合规","7. 资金准备与支持","8. 行业专属应用场景"]
+ zh:["1. 商业理据与领导力","2. 应用场景准备度","3. 数据准备度","4. 人员与变革准备度","5. 工具与采用","6. 负责任人工智能与合规","7. 资金准备与支持","8. 行业专属应用场景"]
 };
 
 var STAGES = {
  en:[["Exploring",0,20],["Planning",21,40],["Implementing",41,60],["Scaling",61,80],["Realizing",81,100]],
- zh:[["探索期",0,20],["规划期",21,40],["实施期",41,60],["扩展期",61,80],["实现期",81,100]]
+ zh:[["探索期",0,20],["规划期",21,40],["实施期",41,60],["扩展期",61,80],["价值实现期",81,100]]
 };
 
 var CORE = [
  [
-  ["We have identified specific business problems or goals AI could help address.","e.g. reduce manual admin, speed up customer response, forecast demand.","我们已明确人工智能可协助解决的具体业务问题或目标。","例如：减少人工行政、加快客户回应、预测需求。"],
-  ["Our owner/senior management actively supports exploring or adopting AI.","Leadership sponsorship is the #1 predictor of successful AI adoption.","我们的管理层积极支持探索或采用人工智能。","领导支持是人工智能成功落地的首要因素。"],
-  ["We have someone (even part-time) responsible for driving AI/digital initiatives.","A named champion, not necessarily a technical hire.","我们有专人（哪怕是兼职）负责推动AI/数字化举措。","一位明确的负责人，不一定是技术人员。"],
-  ["We understand how AI could give us a competitive advantage in our market.","Awareness of AI's strategic relevance to your sector.","我们了解AI如何在市场中带来竞争优势。","对AI在本行业战略意义的认知。"]
+  ["We have identified specific business problems or goals AI could help address.","e.g. reduce manual admin, speed up customer response, forecast demand.","我们已明确人工智能可协助解决的具体业务问题或目标。","例如：减少人工行政工作、加快客户响应速度、预测市场需求。"],
+  ["Our owner/senior management actively supports exploring or adopting AI.","Leadership sponsorship is the #1 predictor of successful AI adoption.","我们的负责人或高层管理人员积极支持探索或采用人工智能。","管理层的支持是人工智能成功落地的首要因素。"],
+  ["We have someone (even part-time) responsible for driving AI/digital initiatives.","A named champion, not necessarily a technical hire.","我们有专人（即使是兼职）负责推动人工智能或数字化举措。","一位明确的负责人，不一定需要具备技术背景。"],
+  ["We understand how AI could give us a competitive advantage in our market.","Awareness of AI's strategic relevance to your sector.","我们了解人工智能如何为我们在市场中带来竞争优势。","对人工智能在本行业战略意义的认知。"]
  ],
  [
-  ["We have a clear list of tasks/processes where AI could add value.","e.g. drafting emails, summarising documents, chatbots, analytics.","我们已清楚列出AI可创造价值的任务/流程。","例如：起草邮件、总结文件、聊天机器人、数据分析。"],
-  ["We can estimate the time or cost currently spent on those tasks.","Needed to size the potential ROI of a use case.","我们能估算目前在这些任务上花费的时间或成本。","用于衡量应用场景的潜在投资回报。"],
-  ["We have prioritised which AI use case to try first (a quick win).","Start small: high-impact, low-effort pilots.","我们已确定优先尝试哪个AI应用场景（速赢项目）。","从小做起：高影响、低投入的试点。"],
-  ["We have already trialled at least one AI tool in a real task.","e.g. Copilot, ChatGPT, an AI feature in existing software.","我们已在实际任务中试用过至少一个AI工具。","例如：Copilot、ChatGPT，或现有软件中的AI功能。"]
+  ["We have a clear list of tasks/processes where AI could add value.","e.g. drafting emails, summarising documents, chatbots, analytics.","我们已清楚列出人工智能可创造价值的工作任务或流程。","例如：起草电邮、归纳文件要点、聊天机器人、数据分析。"],
+  ["We can estimate the time or cost currently spent on those tasks.","Needed to size the potential ROI of a use case.","我们能估算目前在这些任务上所花费的时间或成本。","用于衡量应用场景的潜在投资回报。"],
+  ["We have prioritised which AI use case to try first (a quick win).","Start small: high-impact, low-effort pilots.","我们已确定优先尝试哪一个人工智能应用场景（易见成效的项目）。","从小处着手：高影响、低投入的试点。"],
+  ["We have already trialled at least one AI tool in a real task.","e.g. Copilot, ChatGPT, an AI feature in existing software.","我们已在实际工作中试用过至少一款人工智能工具。","例如：Copilot、ChatGPT，或现有软件内置的人工智能功能。"]
  ],
  [
-  ["Our key business data (sales, customers, operations) is stored digitally.","vs paper, disconnected spreadsheets, or staff memory.","我们的关键业务数据（销售、客户、运营）以数字方式存储。","相对于纸质、零散表格或员工记忆。"],
-  ["Our data is reasonably accurate, complete and up to date.","Poor data quality is the most common barrier to AI adoption.","我们的数据相对准确、完整且及时更新。","数据质量差是人工智能落地最常见的障碍。"],
-  ["We can access and export our data when we need it.","e.g. from your POS, accounting, or CRM system.","我们可以在需要时访问并导出数据。","例如：从POS、会计或CRM系统。"],
-  ["We have basic rules for who can access and edit our data.","Simple data ownership and access control.","我们对谁可访问和编辑数据设有基本规则。","简单的数据归属与访问控制。"]
+  ["Our key business data (sales, customers, operations) is stored digitally.","vs paper, disconnected spreadsheets, or staff memory.","我们的关键业务数据（销售、客户、运营）以数字形式存储。","而非纸质记录、分散的电子表格或员工个人记忆。"],
+  ["Our data is reasonably accurate, complete and up to date.","Poor data quality is the most common barrier to AI adoption.","我们的数据相对准确、完整且及时更新。","数据质量不佳是人工智能落地最常见的障碍。"],
+  ["We can access and export our data when we need it.","e.g. from your POS, accounting, or CRM system.","我们能在需要时访问并导出自己的数据。","例如：从销售点系统（POS）、会计系统或客户关系管理（CRM）系统导出。"],
+  ["We have basic rules for who can access and edit our data.","Simple data ownership and access control.","我们对谁可以访问及修改数据设有基本规则。","简单的数据归属与访问权限管理。"]
  ],
  [
-  ["Our staff are generally comfortable using digital tools and software.","Baseline digital literacy across the team.","我们的员工普遍能自如使用数字工具和软件。","团队的基本数字素养。"],
-  ["Our team is open to changing how they work if it improves results.","Change appetite / resistance to new ways of working.","若能改善成效，我们的团队愿意改变工作方式。","对变革的接受度／抵触程度。"],
-  ["We are willing to invest time in training staff on AI tools.","Capacity and willingness to upskill.","我们愿意投入时间培训员工使用AI工具。","提升技能的能力与意愿。"],
-  ["Someone in our team could learn to use AI tools with light guidance.","Latent capability to adopt without hiring specialists.","团队中有人在少量指导下便能学会使用AI工具。","无需招聘专家即可采用的潜在能力。"]
+  ["Our staff are generally comfortable using digital tools and software.","Baseline digital literacy across the team.","我们的员工普遍能自如使用数字工具与软件。","团队的基本数字素养水平。"],
+  ["Our team is open to changing how they work if it improves results.","Change appetite / resistance to new ways of working.","若能改善成效，我们的团队愿意改变现有工作方式。","对变革的接受程度或抵触程度。"],
+  ["We are willing to invest time in training staff on AI tools.","Capacity and willingness to upskill.","我们愿意投入时间培训员工使用人工智能工具。","提升技能的能力与意愿。"],
+  ["Someone in our team could learn to use AI tools with light guidance.","Latent capability to adopt without hiring specialists.","团队中有成员在少量指导下即可学会使用人工智能工具。","无需招聘专才即可采用的潜在能力。"]
  ],
  [
-  ["We use cloud-based/modern software for our core operations.","e.g. cloud accounting, CRM, e-commerce, Microsoft 365 / Google Workspace.","我们的核心运营使用云端/现代软件。","例如：云端会计、CRM、电商、Microsoft 365 / Google Workspace。"],
-  ["Our existing software already includes AI features we could switch on.","Many SaaS tools now embed AI at no/low extra cost.","我们现有软件已内置可启用的AI功能。","许多SaaS工具已内嵌AI，几乎无需额外费用。"],
-  ["We have reliable internet and devices to run AI-enabled tools.","Basic infrastructure readiness.","我们拥有可靠的网络和设备来运行AI工具。","基本的基础设施准备。"],
-  ["We can integrate a new tool with our current systems if needed.","e.g. connecting a chatbot to your website or catalogue.","如有需要，我们能将新工具与现有系统整合。","例如：将聊天机器人接入网站或产品目录。"]
+  ["We use cloud-based/modern software for our core operations.","e.g. cloud accounting, CRM, e-commerce, Microsoft 365 / Google Workspace.","我们的核心业务运作使用云端或现代化软件。","例如：云端会计系统、CRM、电子商务平台、Microsoft 365 或 Google Workspace。"],
+  ["Our existing software already includes AI features we could switch on.","Many SaaS tools now embed AI at no/low extra cost.","我们现有的软件已内置可直接启用的人工智能功能。","许多软件即服务（SaaS）工具已内嵌人工智能，无需或仅需少量额外费用。"],
+  ["We have reliable internet and devices to run AI-enabled tools.","Basic infrastructure readiness.","我们拥有稳定的网络连接与设备，足以运行人工智能工具。","基本的基础设施准备。"],
+  ["We can integrate a new tool with our current systems if needed.","e.g. connecting a chatbot to your website or catalogue.","如有需要，我们能将新工具与现有系统整合。","例如：将聊天机器人接入公司网站或产品目录。"]
  ],
  [
-  ["We understand our obligations for protecting personal data (e.g. PDPA).","Data-protection compliance awareness.","我们了解保护个人数据的义务（如PDPA个人数据保护法）。","数据保护合规意识。"],
-  ["We have basic cybersecurity measures in place.","e.g. strong passwords, MFA, backups, updated software.","我们已采取基本的网络安全措施。","例如：强密码、多重验证、备份、软件更新。"],
-  ["We would check AI outputs for accuracy before acting on them.","Awareness that AI can be wrong / 'hallucinate'.","在采用AI输出前，我们会核查其准确性。","意识到AI可能出错／产生「幻觉」。"],
-  ["We are mindful of using AI ethically and transparently with customers.","e.g. disclosing chatbots, avoiding biased decisions.","我们注重以合乎道德、透明的方式对客户使用AI。","例如：告知使用聊天机器人、避免偏见决策。"]
+  ["We understand our obligations for protecting personal data (e.g. PDPA).","Data-protection compliance awareness.","我们了解保护个人资料的相关责任（如《个人资料保护法》PDPA）。","数据保护的合规意识。"],
+  ["We have basic cybersecurity measures in place.","e.g. strong passwords, MFA, backups, updated software.","我们已采取基本的网络安全措施。","例如：设置强密码、多重验证、定期备份、及时更新软件。"],
+  ["We would check AI outputs for accuracy before acting on them.","Awareness that AI can be wrong / 'hallucinate'.","在采用人工智能生成的结果之前，我们会先核实其准确性。","意识到人工智能可能出错或产生“幻觉”。"],
+  ["We are mindful of using AI ethically and transparently with customers.","e.g. disclosing chatbots, avoiding biased decisions.","我们注重以合乎道德且透明的方式对客户使用人工智能。","例如：主动说明正在使用聊天机器人、避免产生偏见的决策。"]
  ],
  [
-  ["We have (or can allocate) a budget to trial AI tools.","Even a small monthly subscription counts.","我们有（或能拨出）预算来试用AI工具。","即使是小额月度订阅也算。"],
-  ["We can measure whether an AI investment paid off.","Ability to track time saved, cost reduced, or revenue gained.","我们能衡量AI投资是否见效。","能追踪节省的时间、降低的成本或增加的收入。"],
-  ["We are aware of government support available for digitalisation and workforce training.","Awareness of relevant national support schemes.","我们了解政府为数字化与员工培训提供的支持。","对相关国家支持计划的了解。"],
-  ["We could co-fund a larger AI project if the business case is strong.","Financial capacity beyond a small pilot.","若商业理据充分，我们能为更大型AI项目共同出资。","超出小型试点的资金能力。"]
+  ["We have (or can allocate) a budget to trial AI tools.","Even a small monthly subscription counts.","我们已有（或能拨出）预算试用人工智能工具。","即使是小额的月度订阅费用也计算在内。"],
+  ["We can measure whether an AI investment paid off.","Ability to track time saved, cost reduced, or revenue gained.","我们能衡量人工智能投资是否取得成效。","能够追踪节省的时间、降低的成本或增加的收入。"],
+  ["We are aware of government support available for digitalisation and workforce training.","Awareness of relevant national support schemes.","我们了解政府为数字化转型与员工培训提供的支持。","对相关国家级支持计划的了解。"],
+  ["We could co-fund a larger AI project if the business case is strong.","Financial capacity beyond a small pilot.","若商业理据充分，我们有能力为更大型的人工智能项目共同出资。","超出小型试点范围的资金能力。"]
  ]
 ];
 
 var OVERLAYS = {
   "Retail & E-commerce": [
-    ["We capture customer purchase history that can be used for personalised recommendations.","","我们记录客户购买历史，可用于提供个性化推荐。",""],
+    ["We capture customer purchase history that can be used for personalised recommendations.","","我们记录客户的购买历史，可用于提供个性化推荐。",""],
     ["We maintain inventory and sales data that can support demand forecasting.","","我们维护库存与销售数据，可用于支持需求预测。",""],
-    ["We receive enough customer enquiries for an AI chatbot or virtual assistant to be useful.","","我们收到足够数量的客户咨询，使用AI聊天机器人或虚拟助手将有所帮助。",""],
-    ["We regularly create marketing, product, or social media content that AI could help generate.","","我们定期制作营销、产品或社交媒体内容，AI可协助生成这些内容。",""],
-    ["We sell online or through multiple channels where AI could improve search, pricing, or product discovery.","","我们通过线上或多渠道销售，AI可改善搜索、定价或产品发现。",""]
+    ["We receive enough customer enquiries for an AI chatbot or virtual assistant to be useful.","","我们收到的客户咨询量足以让人工智能聊天机器人或虚拟助手发挥作用。",""],
+    ["We regularly create marketing, product, or social media content that AI could help generate.","","我们定期制作营销、产品或社交媒体内容，人工智能可协助生成这些内容。",""],
+    ["We sell online or through multiple channels where AI could improve search, pricing, or product discovery.","","我们通过线上或多渠道销售，人工智能可改善搜索、定价或产品发现体验。",""]
   ],
   "Finance & Professional Services": [
-    ["We process recurring documents such as invoices, statements, forms, contracts, or reports that AI could extract or summarise.","","我们处理发票、对账单、表格、合同或报告等重复性文件，AI可协助提取信息或进行摘要。",""],
-    ["We perform checks involving risk, compliance, fraud, credit, audit, or client verification.","","我们执行涉及风险、合规、欺诈、信用、审计或客户验证的检查。",""],
-    ["We respond to recurring client queries where an AI assistant could draft or support replies.","","我们需要回应重复性的客户咨询，AI助手可协助起草或支持回复。",""],
-    ["We prepare reports, financial analysis, summaries, or forecasts that AI could help speed up.","","我们编制报告、财务分析、摘要或预测，AI可协助加快完成。",""],
-    ["We have controls to ensure AI outputs are reviewed before being used in client-facing or regulated work.","","我们设有管控措施，确保AI输出在用于客户相关或受监管工作之前经过审核。",""]
+    ["We process recurring documents such as invoices, statements, forms, contracts, or reports that AI could extract or summarise.","","我们需处理发票、对账单、表格、合同或报告等重复性文件，人工智能可协助提取信息或归纳要点。",""],
+    ["We perform checks involving risk, compliance, fraud, credit, audit, or client verification.","","我们执行涉及风险、合规、欺诈、信贷、审计或客户身份验证的检查工作。",""],
+    ["We respond to recurring client queries where an AI assistant could draft or support replies.","","我们需回应重复性的客户咨询，人工智能助手可协助起草或辅助回复。",""],
+    ["We prepare reports, financial analysis, summaries, or forecasts that AI could help speed up.","","我们需编制报告、财务分析、摘要或预测，人工智能可协助加快完成。",""],
+    ["We have controls to ensure AI outputs are reviewed before being used in client-facing or regulated work.","","我们设有管控措施，确保人工智能生成的内容在用于客户相关或受监管工作前经过审核。",""]
   ],
   "Logistics & Supply Chain": [
-    ["We track shipments, deliveries, or order status in a system that AI could analyse.","","我们在系统中追踪货运、配送或订单状态，AI可对这些数据进行分析。",""],
-    ["We plan routes, deliveries, or schedules that AI could help optimise.","","我们规划路线、配送或时间表，AI可协助优化。",""],
-    ["We manage warehouse, inventory, or replenishment data that could support forecasting.","","我们管理仓库、库存或补货数据，这些数据可支持预测。",""],
-    ["We handle recurring trade, customs, purchase order, or delivery documents that AI could automate.","","我们处理重复性的贸易、海关、采购订单或交付文件，AI可协助自动化。",""],
-    ["We collect supplier or partner performance data that AI could use to flag risk or delays.","","我们收集供应商或合作伙伴的绩效数据，AI可用于识别风险或延误。",""]
+    ["We track shipments, deliveries, or order status in a system that AI could analyse.","","我们在系统中追踪货运、配送或订单状态，人工智能可对这些数据进行分析。",""],
+    ["We plan routes, deliveries, or schedules that AI could help optimise.","","我们需规划路线、配送安排或时间表，人工智能可协助优化。",""],
+    ["We manage warehouse, inventory, or replenishment data that could support forecasting.","","我们管理仓库、库存或补货数据，这些数据可用于支持预测。",""],
+    ["We handle recurring trade, customs, purchase order, or delivery documents that AI could automate.","","我们需处理重复性的贸易、报关、采购订单或交付文件，人工智能可协助自动化处理。",""],
+    ["We collect supplier or partner performance data that AI could use to flag risk or delays.","","我们收集供应商或合作伙伴的绩效数据，人工智能可用于识别潜在风险或延误。",""]
   ],
   "Food & Beverage / Hospitality": [
     ["We capture sales, footfall, booking, or order data that could help forecast demand.","","我们记录销售、客流、预订或订单数据，可用于预测需求。",""],
-    ["We adjust menus, promotions, or staffing based on customer demand patterns.","","我们根据客户需求模式调整菜单、促销或人员安排。",""],
-    ["We receive customer reviews, feedback, or social media comments that AI could analyse.","","我们收到客户评价、反馈或社交媒体评论，AI可协助分析。",""],
-    ["We handle recurring customer enquiries about bookings, menus, opening hours, or order status.","","我们处理有关预订、菜单、营业时间或订单状态的重复性客户咨询。",""],
-    ["We track ingredient, stock, or wastage data that AI could help optimise.","","我们追踪食材、库存或浪费数据，AI可协助优化。",""]
+    ["We adjust menus, promotions, or staffing based on customer demand patterns.","","我们会根据客户需求模式调整菜单、促销活动或人员安排。",""],
+    ["We receive customer reviews, feedback, or social media comments that AI could analyse.","","我们收到客户评价、反馈或社交媒体评论，人工智能可协助分析。",""],
+    ["We handle recurring customer enquiries about bookings, menus, opening hours, or order status.","","我们需处理有关预订、菜单、营业时间或订单状态的重复性客户咨询。",""],
+    ["We track ingredient, stock, or wastage data that AI could help optimise.","","我们追踪食材、库存或损耗数据，人工智能可协助优化。",""]
   ],
   "Healthcare & Wellness": [
-    ["We handle recurring appointment, service, or customer/patient enquiries that AI could help triage or draft responses for.","","我们处理重复性的预约、服务或客户／患者咨询，AI可协助分流或起草回复。",""],
-    ["We manage administrative documents, notes, forms, or reports that AI could summarise or organise.","","我们管理行政文件、记录、表格或报告，AI可协助摘要或整理。",""],
-    ["We collect feedback, reviews, or service quality data that AI could analyse for improvement themes.","","我们收集反馈、评价或服务质量数据，AI可分析其中的改进主题。",""],
-    ["We track booking, utilisation, or resource data that AI could use for scheduling or capacity planning.","","我们追踪预订、使用率或资源数据，AI可用于排程或容量规划。",""],
-    ["We have clear rules for handling personal, sensitive, or health-related information before using AI tools.","","在使用AI工具之前，我们对个人、敏感或健康相关信息的处理设有明确规则。",""]
+    ["We handle recurring appointment, service, or customer/patient enquiries that AI could help triage or draft responses for.","","我们需处理重复性的预约、服务或客户／患者咨询，人工智能可协助分流或起草回复。",""],
+    ["We manage administrative documents, notes, forms, or reports that AI could summarise or organise.","","我们管理行政文件、记录、表格或报告，人工智能可协助归纳或整理。",""],
+    ["We collect feedback, reviews, or service quality data that AI could analyse for improvement themes.","","我们收集反馈、评价或服务质量数据，人工智能可从中分析改进方向。",""],
+    ["We track booking, utilisation, or resource data that AI could use for scheduling or capacity planning.","","我们追踪预约、使用率或资源数据，人工智能可用于排程或容量规划。",""],
+    ["We have clear rules for handling personal, sensitive, or health-related information before using AI tools.","","在使用人工智能工具前，我们对个人、敏感或健康相关信息的处理已设有明确规则。",""]
   ],
   "Education & Training": [
-    ["We create learning materials, slides, quizzes, case studies, or summaries that AI could help draft.","","我们制作学习材料、幻灯片、测验、案例研究或摘要，AI可协助起草。",""],
-    ["We answer recurring learner or participant enquiries that an AI assistant could support.","","我们回应重复性的学习者或参与者咨询，AI助手可提供支持。",""],
-    ["We collect learner progress, attendance, feedback, or assessment data that could support learning analytics.","","我们收集学习进度、出席、反馈或评估数据，可用于支持学习分析。",""],
-    ["We manage training administration tasks that AI could help automate, such as reminders, summaries, or follow-ups.","","我们管理培训行政任务，例如提醒、摘要或跟进，AI可协助自动化。",""],
-    ["We have guidelines to ensure AI-generated learning content is reviewed for accuracy and appropriateness.","","我们设有指引，确保AI生成的学习内容经过准确性与适切性审核。",""]
+    ["We create learning materials, slides, quizzes, case studies, or summaries that AI could help draft.","","我们制作学习材料、幻灯片、测验、案例研究或摘要，人工智能可协助起草。",""],
+    ["We answer recurring learner or participant enquiries that an AI assistant could support.","","我们需回应重复性的学员或参与者咨询，人工智能助手可提供支持。",""],
+    ["We collect learner progress, attendance, feedback, or assessment data that could support learning analytics.","","我们收集学员的学习进度、出席、反馈或评估数据，可用于支持学习分析。",""],
+    ["We manage training administration tasks that AI could help automate, such as reminders, summaries, or follow-ups.","","我们需处理培训行政工作，例如提醒通知、内容摘要或后续跟进，人工智能可协助自动化。",""],
+    ["We have guidelines to ensure AI-generated learning content is reviewed for accuracy and appropriateness.","","我们设有指引，确保人工智能生成的学习内容经过准确性与适切性审核。",""]
   ],
   "Human Resources & Recruitment": [
-    ["We create job descriptions, interview questions, HR announcements, or onboarding materials that AI could help draft.","","我们制作职位说明、面试问题、人力资源公告或入职材料，AI可协助起草。",""],
-    ["We process employee or candidate information where AI could help organise, summarise, or compare data.","","我们处理员工或候选人信息，AI可协助整理、摘要或比较数据。",""],
-    ["We receive recurring HR queries on leave, benefits, policies, or onboarding that an AI assistant could support.","","我们收到有关休假、福利、政策或入职的重复性人力资源咨询，AI助手可提供支持。",""],
+    ["We create job descriptions, interview questions, HR announcements, or onboarding materials that AI could help draft.","","我们制作职位说明、面试问题、人力资源公告或入职材料，人工智能可协助起草。",""],
+    ["We process employee or candidate information where AI could help organise, summarise, or compare data.","","我们处理员工或应聘者信息，人工智能可协助整理、归纳或比较数据。",""],
+    ["We receive recurring HR queries on leave, benefits, policies, or onboarding that an AI assistant could support.","","我们收到有关休假、福利、政策或入职的重复性人力资源咨询，人工智能助手可提供支持。",""],
     ["We track employee skills, performance, or training records that could support workforce planning.","","我们追踪员工技能、绩效或培训记录，可用于支持人力规划。",""],
-    ["We have safeguards to prevent bias, unfair screening, or inappropriate use of AI in people decisions.","","我们设有保障措施，防止在人员决策中出现偏见、不公平筛选或不当使用AI。",""]
+    ["We have safeguards to prevent bias, unfair screening, or inappropriate use of AI in people decisions.","","我们设有保障措施，防止在人事决策中出现偏见、不公平筛选或不当使用人工智能。",""]
   ],
   "Legal, Risk & Compliance": [
-    ["We review recurring contracts, policies, regulations, or compliance documents that AI could help summarise.","","我们审阅重复性的合同、政策、法规或合规文件，AI可协助摘要。",""],
-    ["We maintain internal templates, clauses, SOPs, or guidance documents that could power a knowledge assistant.","","我们维护内部模板、条款、标准作业程序或指导文件，可用于支持知识助手。",""],
-    ["We need to classify issues, risks, complaints, or exceptions in a consistent way.","","我们需要以一致的方式对问题、风险、投诉或例外情况进行分类。",""],
-    ["We have a review process to ensure AI outputs are checked before any legal, compliance, or client-facing use.","","我们设有审核流程，确保AI输出在用于法律、合规或客户相关用途之前经过检查。",""],
-    ["We handle confidential or regulated information and have clear rules on what can be entered into AI tools.","","我们处理机密或受监管信息，并对哪些内容可输入AI工具设有明确规则。",""]
+    ["We review recurring contracts, policies, regulations, or compliance documents that AI could help summarise.","","我们需审阅重复性的合同、政策、法规或合规文件，人工智能可协助归纳要点。",""],
+    ["We maintain internal templates, clauses, SOPs, or guidance documents that could power a knowledge assistant.","","我们维护内部模板、条款、标准作业流程或指导文件，可用于支持知识助手。",""],
+    ["We need to classify issues, risks, complaints, or exceptions in a consistent way.","","我们需要以一致的标准对问题、风险、投诉或例外情况进行分类。",""],
+    ["We have a review process to ensure AI outputs are checked before any legal, compliance, or client-facing use.","","我们设有审核流程，确保人工智能生成的内容在用于法律、合规或客户相关用途前经过检查。",""],
+    ["We handle confidential or regulated information and have clear rules on what can be entered into AI tools.","","我们处理机密或受监管的信息，并对可输入人工智能工具的内容设有明确规则。",""]
   ],
   "Marketing, Media & Creative Services": [
-    ["We regularly create marketing copy, social posts, visuals, scripts, or campaign assets that AI could help generate.","","我们定期制作营销文案、社交媒体帖文、视觉素材、脚本或活动资产，AI可协助生成。",""],
-    ["We use customer, audience, or campaign performance data to refine marketing decisions.","","我们使用客户、受众或活动绩效数据来优化营销决策。",""],
-    ["We need to personalise content for different customer segments, channels, or buyer journeys.","","我们需要为不同客户群体、渠道或购买旅程提供个性化内容。",""],
-    ["We test different headlines, creatives, or calls-to-action and could use AI to speed up iteration.","","我们测试不同的标题、创意或行动号召，并可使用AI加快迭代。",""],
-    ["We have brand, review, and approval guidelines to manage AI-generated content quality.","","我们设有品牌、审核与批准指引，以管理AI生成内容的质量。",""]
+    ["We regularly create marketing copy, social posts, visuals, scripts, or campaign assets that AI could help generate.","","我们定期制作营销文案、社交媒体帖文、视觉素材、脚本或推广物料，人工智能可协助生成。",""],
+    ["We use customer, audience, or campaign performance data to refine marketing decisions.","","我们运用客户、受众或推广活动的绩效数据来优化营销决策。",""],
+    ["We need to personalise content for different customer segments, channels, or buyer journeys.","","我们需要针对不同客户群体、渠道或购买旅程提供个性化内容。",""],
+    ["We test different headlines, creatives, or calls-to-action and could use AI to speed up iteration.","","我们会测试不同的标题、创意或行动号召，人工智能可加快迭代速度。",""],
+    ["We have brand, review, and approval guidelines to manage AI-generated content quality.","","我们设有品牌、审核与批准指引，以管理人工智能生成内容的质量。",""]
   ],
   "Manufacturing & Engineering": [
-    ["We collect machine, equipment, production, or maintenance data that AI could analyse.","","我们收集机器、设备、生产或维护数据，AI可进行分析。",""],
+    ["We collect machine, equipment, production, or maintenance data that AI could analyse.","","我们收集机器、设备、生产或维护数据，人工智能可进行分析。",""],
     ["We track defects, rework, downtime, or quality issues in a structured way.","","我们以结构化方式追踪缺陷、返工、停机或质量问题。",""],
-    ["We plan production, manpower, materials, or schedules that AI could help optimise.","","我们规划生产、人力、材料或时间表，AI可协助优化。",""],
-    ["We maintain technical manuals, SOPs, or engineering documents that AI could help search or summarise.","","我们维护技术手册、标准作业程序或工程文件，AI可协助搜索或摘要。",""],
+    ["We plan production, manpower, materials, or schedules that AI could help optimise.","","我们需规划生产、人力、物料或排期，人工智能可协助优化。",""],
+    ["We maintain technical manuals, SOPs, or engineering documents that AI could help search or summarise.","","我们维护技术手册、标准作业流程或工程文件，人工智能可协助检索或归纳。",""],
     ["We have enough digital records to identify recurring operational patterns or failure points.","","我们拥有足够的数字记录，可识别重复出现的运营模式或故障点。",""]
   ],
   "Real Estate, Facilities & Built Environment": [
-    ["We track building, facilities, maintenance, or service request data that AI could analyse.","","我们追踪建筑、设施、维护或服务请求数据，AI可进行分析。",""],
-    ["We receive recurring tenant, client, or customer enquiries that an AI assistant could support.","","我们收到重复性的租户、客户或顾客咨询，AI助手可提供支持。",""],
-    ["We handle leases, contracts, inspection reports, or property documents that AI could summarise.","","我们处理租约、合同、检查报告或房地产文件，AI可协助摘要。",""],
-    ["We collect energy, occupancy, or usage data that AI could use to identify efficiency opportunities.","","我们收集能源、占用率或使用数据，AI可用于识别提升效率的机会。",""],
-    ["We have workflows for escalating urgent or sensitive cases to human staff.","","我们设有工作流程，将紧急或敏感个案升级给人工处理。",""]
+    ["We track building, facilities, maintenance, or service request data that AI could analyse.","","我们追踪建筑、设施、维护或服务请求数据，人工智能可进行分析。",""],
+    ["We receive recurring tenant, client, or customer enquiries that an AI assistant could support.","","我们收到重复性的租户、客户或顾客咨询，人工智能助手可提供支持。",""],
+    ["We handle leases, contracts, inspection reports, or property documents that AI could summarise.","","我们处理租约、合同、检查报告或物业文件，人工智能可协助归纳要点。",""],
+    ["We collect energy, occupancy, or usage data that AI could use to identify efficiency opportunities.","","我们收集能源、占用率或使用数据，人工智能可用于识别提升效率的机会。",""],
+    ["We have workflows for escalating urgent or sensitive cases to human staff.","","我们设有工作流程，可将紧急或敏感个案转交人工处理。",""]
   ],
   "Sustainability, ESG & Non-Profit / Social Impact": [
-    ["We collect environmental, social, operational, or impact data that AI could help analyse.","","我们收集环境、社会、运营或影响数据，AI可协助分析。",""],
-    ["We prepare reports, proposals, grant applications, or ESG updates that AI could help draft or summarise.","","我们编制报告、提案、资助申请或ESG更新，AI可协助起草或摘要。",""],
-    ["We track energy, waste, emissions, resource usage, or project outcomes that AI could help optimise.","","我们追踪能源、废弃物、排放、资源使用或项目成果，AI可协助优化。",""],
-    ["We serve beneficiaries, volunteers, members, or stakeholders whose feedback could be analysed for insights.","","我们服务受益者、志愿者、成员或利益相关方，他们的反馈可进行分析以获取洞察。",""],
-    ["We have governance practices to ensure AI-supported decisions remain transparent, inclusive, and accountable.","","我们设有治理实践，确保AI辅助决策保持透明、包容且可问责。",""]
+    ["We collect environmental, social, operational, or impact data that AI could help analyse.","","我们收集环境、社会、运营或影响力数据，人工智能可协助分析。",""],
+    ["We prepare reports, proposals, grant applications, or ESG updates that AI could help draft or summarise.","","我们编制报告、提案、资助申请或ESG进展更新，人工智能可协助起草或归纳。",""],
+    ["We track energy, waste, emissions, resource usage, or project outcomes that AI could help optimise.","","我们追踪能源、废弃物、排放、资源使用或项目成果，人工智能可协助优化。",""],
+    ["We serve beneficiaries, volunteers, members, or stakeholders whose feedback could be analysed for insights.","","我们服务受益者、志愿者、会员或利益相关方，其反馈可进行分析以获取洞察。",""],
+    ["We have governance practices to ensure AI-supported decisions remain transparent, inclusive, and accountable.","","我们设有治理机制，确保人工智能辅助的决策保持透明、包容且可问责。",""]
   ]
 };
 
@@ -887,14 +934,14 @@ var RECS = {
   "8. Industry-Specific Use Cases":"Implement your top sector use case as a scoped pilot with clear success metrics."
  },
  zh:{
-  "1. Business Case & Leadership":"任命一位兼职AI负责人，并召开一小时的领导层会议，确定2–3个目标业务问题。",
-  "2. Use-Case Readiness":"列出重复／耗时的任务，估算所花时间，选择一个高影响的速赢项目，用现成工具（如 Copilot 或 ChatGPT）试用。",
-  "3. Data Readiness":"将关键数据（销售／客户／库存）整合到一个云端系统，修正明显的质量缺口，并设立简单的访问规则与备份。",
-  "4. People & Change Readiness":"举办简短的AI认知讲座，安排1–2名员工参加入门AI工作坊，并发布简单的内部「AI使用指引」。",
-  "5. Tools & Adoption":"审查现有软件中已付费的内置AI功能并启用；在正式采用前先试用中立的工具。",
-  "6. Responsible AI & Compliance":"进行PDPA自查，开启多重验证／备份／更新，并对面向客户或财务的输出采用「人工复核AI」规则。",
-  "7. Financial Readiness & Funding":"设定小额月度AI试用预算并配以简单的投资回报追踪，并了解适用于数字化与培训的政府支持。",
-  "8. Industry-Specific Use Cases":"将您最重要的行业应用场景作为有明确成功指标的试点加以实施。"
+  "1. Business Case & Leadership":"指定一位兼职人工智能负责人，并召开一小时的管理层会议，确定2至3个目标业务问题。",
+  "2. Use-Case Readiness":"列出重复性或耗时的工作任务，估算所花费的时间，并选择一项高影响、易见成效的任务，使用现成工具（如 Copilot 或 ChatGPT）进行试点。",
+  "3. Data Readiness":"将关键数据（销售、客户、库存）整合至同一云端系统，修正明显的数据质量问题，并设立简单的访问权限规则与备份机制。",
+  "4. People & Change Readiness":"举办简短的人工智能认知讲座，安排1至2名员工参加入门工作坊，并发布简明的内部“人工智能使用指引”。",
+  "5. Tools & Adoption":"检视现有软件中已付费但尚未启用的内置人工智能功能并加以启用；在正式采用前先试用中立的工具。",
+  "6. Responsible AI & Compliance":"进行《个人资料保护法》（PDPA）自查，启用多重验证、备份与系统更新，并对面向客户或涉及财务的输出采用“人工复核人工智能”原则。",
+  "7. Financial Readiness & Funding":"设定小额的月度人工智能试用预算，并配以简单的投资回报追踪；同时了解适用于数字化转型与员工培训的政府支持计划。",
+  "8. Industry-Specific Use Cases":"将贵机构最重要的行业应用场景作为试点项目实施，并设定明确的成功指标。"
  }
 };
 
@@ -914,24 +961,24 @@ var USECASES = {
     "Sustainability, ESG & Non-Profit / Social Impact":["ESG reporting support","Energy and waste optimisation","Grant and proposal drafting","Beneficiary or stakeholder insights","Sustainability project planning"]
   },
   zh:{
-    "Retail & E-commerce":["个性化产品推荐","需求预测","客户服务聊天机器人","AI营销内容","智能搜索、定价与商品陈列"],
-    "Finance & Professional Services":["文件处理与摘要","合规与风险监控","客户服务助手","财务报告与分析","研究与顾问支持"],
-    "Logistics & Supply Chain":["预测到达时间与延误预警","路线优化","仓库与库存优化","文件自动化","供应商风险分析"],
-    "Food & Beverage / Hospitality":["需求与客流预测","AI菜单或促销规划","客户评价分析","预订与咨询聊天机器人","库存与浪费减少"],
-    "Healthcare & Wellness":["预约与患者咨询助手","临床行政摘要","客户／患者反馈分析","需求与资源规划","兼顾合规的文件支持"],
-    "Education & Training":["学习内容生成","学习者支持聊天机器人","评估反馈支持","学习分析","培训行政自动化"],
-    "Human Resources & Recruitment":["职位说明与面试问题起草","候选人筛选支持","员工咨询助手","人力资源政策摘要","培训需求分析"],
-    "Legal, Risk & Compliance":["合同审阅支持","政策与法规摘要","合规检查清单生成","风险问题分类","内部知识助手"],
-    "Marketing, Media & Creative Services":["营销活动内容生成","社交媒体日历规划","受众与趋势分析","创意概念开发","营销活动绩效优化"],
-    "Manufacturing & Engineering":["预测性维护","质量检查支持","生产规划","库存与零部件预测","技术文件助手"],
-    "Real Estate, Facilities & Built Environment":["设施维护预测","租户或客户咨询聊天机器人","房地产文件摘要","能源使用优化","空间使用分析"],
+    "Retail & E-commerce":["个性化产品推荐","需求预测","客户服务聊天机器人","人工智能营销内容","智能搜索、定价与商品管理"],
+    "Finance & Professional Services":["文件处理与内容归纳","合规与风险监控","客户服务助手","财务报告与分析","研究与顾问支持"],
+    "Logistics & Supply Chain":["预计到达时间预测与延误预警","路线优化","仓库与库存优化","文件处理自动化","供应商风险分析"],
+    "Food & Beverage / Hospitality":["需求与客流预测","菜单或促销规划","客户评价分析","预订与咨询聊天机器人","库存管理与损耗减少"],
+    "Healthcare & Wellness":["预约与患者咨询助手","临床行政文件归纳","客户／患者反馈分析","需求与资源规划","兼顾合规的文件处理支持"],
+    "Education & Training":["学习内容生成","学员支持聊天机器人","评估反馈支持","学习数据分析","培训行政自动化"],
+    "Human Resources & Recruitment":["职位说明与面试问题起草","应聘者筛选支持","员工咨询助手","人力资源政策归纳","培训需求分析"],
+    "Legal, Risk & Compliance":["合同审阅支持","政策与法规归纳","合规检查清单生成","风险问题分类","内部知识助手"],
+    "Marketing, Media & Creative Services":["推广内容生成","社交媒体排期规划","受众与趋势分析","创意概念开发","推广成效优化"],
+    "Manufacturing & Engineering":["预测性维护","质量检测支持","生产规划","库存与零部件预测","技术文件助手"],
+    "Real Estate, Facilities & Built Environment":["设施维护预测","租户或客户咨询聊天机器人","物业文件归纳","能源使用优化","空间使用率分析"],
     "Sustainability, ESG & Non-Profit / Social Impact":["ESG报告支持","能源与废弃物优化","资助申请与提案起草","受益者或利益相关方洞察","可持续发展项目规划"]
   }
 };
 
 var PILLS = {
  en:["Business Case & Leadership","Use-Case Readiness","Data Readiness","People & Change","Tools & Adoption","Responsible AI & Compliance","Financial Readiness & Funding","Industry Use Cases"],
- zh:["商业价值与领导力","应用场景准备度","数据准备度","人员与变革","工具与采用","负责任AI与合规","资金准备与支持","行业应用场景"]
+ zh:["商业理据与领导力","应用场景准备度","数据准备度","人员与变革","工具与采用","负责任AI与合规","资金准备与支持","行业应用场景"]
 };
 
 /* ================= STATE ================= */
@@ -1005,7 +1052,11 @@ function applyStaticText(){
   setText('ctaH', t.ctaH);
   setText('ctaP', t.ctaP);
   setText('ctaBtn1', t.ctaBtn1);
+  setText('ctaLinkNote', t.ctaLinkNote(CTA_LINK));
   setText('resFoot', t.resFoot);
+
+  var cta = document.getElementById('ctaBtn1');
+  if(cta) cta.setAttribute('href', CTA_LINK);
 
   var pw = document.getElementById('introPills');
   if(pw){
@@ -1037,7 +1088,7 @@ function rebuildIndustryDropdown(){
   sel.innerHTML = "";
   var placeholder = document.createElement('option');
   placeholder.value = "";
-  placeholder.textContent = (LANG==='zh') ? "请选择您的行业" : "Please select your industry";
+  placeholder.textContent = (LANG==='zh') ? "请选择贵机构所属行业" : "Please select your industry";
   placeholder.disabled = true;
   placeholder.selected = !previousValue;
   sel.appendChild(placeholder);
@@ -1094,8 +1145,6 @@ function rebuildReferrerDropdown(){
     sel.appendChild(o);
   });
 }
-
-function ctaClick(){ window.open(CTA_LINK, '_blank'); }
 
 /* =====================================================================
    ENGLISH PLAIN-TEXT OUTPUTS (for SharePoint / Power BI)
@@ -1224,7 +1273,7 @@ function submitAssessmentToSharePoint(){
     return true;
   }).catch(function(error){
     if(window.console) console.error("Submission failed:", error);
-    alert(LANG==='zh' ? "提交时发生错误。请稍后再试。" : "There was an error submitting your responses. Please try again.");
+    alert(LANG==='zh' ? "提交时发生错误，请稍后再试。" : "There was an error submitting your responses. Please try again.");
     return false;
   });
 }
@@ -1254,7 +1303,7 @@ function start(){
   var email = emailField.value.trim();
 
   if(!selectedIndustry){
-    alert(LANG==='zh' ? "请选择您的行业。" : "Please select your industry.");
+    alert(LANG==='zh' ? "请选择贵机构所属行业。" : "Please select your industry.");
     industryField.focus(); return;
   }
   if(!selectedScope){
@@ -1288,7 +1337,13 @@ function start(){
   window.scrollTo({ top:0, behavior:'smooth' });
 }
 
+/* Warn before returning to the details page — answers will be cleared. */
 function backToIntro(){
+  var answered = Object.keys(answers).length;
+  if(answered > 0){
+    if(!window.confirm(T[LANG].backWarn(answered))) return;
+  }
+  answers = {};
   document.getElementById('quiz').classList.add('hidden');
   document.getElementById('intro').classList.remove('hidden');
   window.scrollTo({ top:0, behavior:'smooth' });
@@ -1339,7 +1394,7 @@ function renderQuestions(){
     opts.className = 'opts';
 
     var LIKERT = (LANG==='zh')
-      ? [[0,"完全没有","/ 不清楚"],[1,"刚起步","/ 临时性"],[2,"部分","到位"],[3,"大致","到位"],[4,"完全/先进","到位"]]
+      ? [[0,"完全没有","／不清楚"],[1,"刚起步","／临时性"],[2,"部分","具备"],[3,"大致","具备"],[4,"完全／先进","具备"]]
       : [[0,"Not at all","/ Don't know"],[1,"Just starting","/ Ad hoc"],[2,"Partially","in place"],[3,"Mostly","in place"],[4,"Fully / Advanced","in place"]];
 
     LIKERT.forEach(function(o){
@@ -1591,7 +1646,6 @@ function initApp(){
     on('seeResults','click', submitAndShowResults);
     on('btnRetake','click', restart);
     on('btnPrint','click', printResults);
-    on('ctaBtn1','click', ctaClick);
   }catch(err){
     showError(err && err.message ? err.message : String(err));
   }
