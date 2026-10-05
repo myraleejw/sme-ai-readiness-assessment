@@ -62,7 +62,7 @@
     white-space:nowrap;
   }
   .brandtext{display:flex;flex-direction:column;justify-content:center;padding:14px 0;min-width:0}
-  .brandtext h1{
+  .brandtext .brandtitle{
     font-family:'Oswald',Arial,sans-serif;
     font-size:30px;
     font-weight:400;
@@ -96,6 +96,17 @@
     line-height:1.25;
   }
   h2{font-size:32px;margin-bottom:12px}
+  /* Intro page title — class + !important so a host stylesheet cannot shrink it.
+     No max-width, so it stays on a single line on desktop. */
+  h2.pagetitle{
+    font-family:'Oswald','Libre Franklin',Arial,sans-serif!important;
+    font-size:40px!important;
+    font-weight:400!important;
+    line-height:1.2!important;
+    color:var(--navy)!important;
+    letter-spacing:.005em!important;
+    margin:0 0 20px!important;
+  }
   .errbar{
     display:none;
     background:#FDECEC;
@@ -132,31 +143,8 @@
   }
   .objective h3{font-size:24px;margin-bottom:8px}
   .objective p{font-size:15px;color:var(--text-secondary)}
-  .pillarlist{
-    list-style:none;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    gap:6px 24px;
-    margin:10px 0 20px;
-    padding:0;
-  }
-  .pillarlist li{
-    position:relative;
-    padding-left:18px;
-    font-size:14px;
-    color:var(--text-secondary);
-    line-height:1.6;
-  }
-  .pillarlist li:before{
-    content:"";
-    position:absolute;
-    left:0;
-    top:9px;
-    width:6px;
-    height:6px;
-    background:var(--gold);
-    border-radius:50%;
-  }
+
+  /* ---------- WHAT THIS ASSESSMENT COVERS ---------- */
   .pillarlist-label{
     font-size:14px;
     font-weight:600;
@@ -165,6 +153,63 @@
     letter-spacing:.04em;
     margin-top:6px;
   }
+  .coverage{margin:12px 0 24px}
+  .coveragegroup{
+    border:1px solid var(--border);
+    border-radius:4px;
+    background:var(--surface-muted);
+    padding:16px 18px;
+  }
+  .coveragehead{
+    font-size:15px;
+    font-weight:600;
+    color:var(--navy);
+    margin-bottom:14px;
+    padding-bottom:12px;
+    border-bottom:1px solid var(--border);
+  }
+  .pillarlist{
+    list-style:none;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:9px 24px;
+    margin:0;
+    padding:0;
+    align-items:start;
+  }
+  .pillarlist li{
+    position:relative;
+    display:block;
+    padding-left:30px;
+    font-size:14px;
+    line-height:1.5;
+    color:var(--text-secondary);
+    min-height:21px;
+  }
+  .pillarlist li .num{
+    position:absolute;
+    left:0;
+    top:0;
+    width:21px;
+    height:21px;
+    border-radius:50%;
+    background:#fff;
+    border:1px solid var(--gold-light);
+    color:var(--gold-dark);
+    font-size:11px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .coveragetotal{
+    font-size:13px;
+    color:var(--grey);
+    margin-top:12px;
+    text-align:right;
+  }
+  .coveragetotal b{color:var(--navy)}
+
   .btn{
     background:var(--gold);
     color:#fff;
@@ -277,9 +322,80 @@
   .gauge .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
   .gauge .center .num{font-family:'Oswald',Arial,sans-serif;font-size:44px;font-weight:400;color:var(--navy);line-height:1}
   .gauge .center .stg{font-weight:700;margin-top:4px}
-  .ladder{flex:1;min-width:260px}
-  .ladder .step{display:flex;justify-content:space-between;padding:10px 14px;border-radius:4px;background:var(--surface-muted);border:1px solid var(--border);margin-bottom:6px;font-size:14px}
+  .ladder{flex:1;min-width:280px}
+  .ladder .step{
+    display:block;
+    padding:10px 14px;
+    border-radius:4px;
+    background:var(--surface-muted);
+    border:1px solid var(--border);
+    margin-bottom:6px;
+    font-size:14px;
+  }
+  .ladder .step .steptop{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+  .ladder .step .stepdesc{font-size:12px;color:var(--grey);margin-top:3px;line-height:1.45}
   .ladder .step.active{background:var(--navy);color:#fff;font-weight:700;border-color:var(--navy)}
+  .ladder .step.active .stepdesc{color:var(--gold-pale);font-weight:400}
+
+  /* ---------- CURRENT STAGE DETAIL PANEL (RESULTS) ---------- */
+  .stagebox{
+    border:1px solid var(--border);
+    border-left:6px solid var(--gold);
+    border-radius:4px;
+    background:var(--surface-muted);
+    padding:20px 22px;
+    margin:0 0 26px;
+  }
+  .stagebox h3{font-size:21px;margin-bottom:4px}
+  .stagebox .stagelede{font-size:14px;color:var(--text-secondary);line-height:1.55}
+  .stagegrid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:14px;
+    margin-top:16px;
+  }
+  .stagegrid .cell{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:14px 16px;
+  }
+  .stagegrid .cell b{
+    display:block;
+    font-size:11.5px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--gold-dark);
+    margin-bottom:6px;
+  }
+  .stagegrid .cell p{font-size:13.5px;color:var(--text-secondary);line-height:1.55}
+
+  /* ---------- ALL 5 STAGES REFERENCE (RESULTS) ---------- */
+  .stagescale{
+    list-style:none;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:10px;
+    margin:10px 0 6px;
+    padding:0;
+  }
+  .stagescale li{
+    border:1px solid var(--border);
+    border-top:3px solid var(--gold-light);
+    border-radius:4px;
+    background:var(--surface-muted);
+    padding:12px 14px;
+  }
+  .stagescale li.current{
+    border-top-color:var(--gold);
+    background:var(--gold-pale);
+    border-color:var(--gold-light);
+  }
+  .stagescale li b{display:block;color:var(--navy);font-size:14px;margin-bottom:4px}
+  .stagescale li b em{font-style:normal;font-weight:600;color:var(--gold-dark);font-size:11px;letter-spacing:.04em;text-transform:uppercase;display:block;margin-top:2px}
+  .stagescale li span{display:block;font-size:12px;color:var(--grey);margin-bottom:6px}
+  .stagescale li p{font-size:13px;color:var(--text-secondary);line-height:1.5}
+
   .resultcols{display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap}
   .resultcol{flex:1 1 320px;min-width:300px}
   .barrow{display:grid;grid-template-columns:1.2fr 2fr auto;gap:10px;align-items:center;margin-bottom:10px;font-size:13px}
@@ -307,6 +423,9 @@
   .hidden{display:none!important}
   .printonly{display:none}
 
+  @media (max-width:980px){
+    h2.pagetitle{font-size:34px!important}
+  }
   @media (max-width:760px){
     .wrap{padding-left:16px;padding-right:16px}
     header.top .wrap{min-height:auto;padding:0 16px 16px}
@@ -314,8 +433,9 @@
     .logobox{min-height:60px;padding:10px 40px 10px 16px;clip-path:polygon(0 0,100% 0,calc(100% - 24px) 100%,0 100%)}
     .logobox img{max-height:44px}
     .brandtext{padding:0}
-    .brandtext h1{font-size:24px}
+    .brandtext .brandtitle{font-size:24px}
     .langtoggle{align-self:flex-start}
+    h2.pagetitle{font-size:27px!important}
     h2{font-size:28px}
     .card{padding:24px}
     .stickybar{margin:-24px -24px 16px;padding:14px 24px 10px}
@@ -324,6 +444,8 @@
     .barrow{grid-template-columns:1fr;gap:6px}
     select,input[type=text],input[type=email]{width:100%;min-width:0}
     .printhint{margin-top:0}
+    .stagebox{padding:16px 16px}
+    .coveragetotal{text-align:left}
   }
 
   /* ===================== PRINT / SAVE AS PDF ===================== */
@@ -353,7 +475,7 @@
     .logobox{background:none;min-height:0;padding:0;clip-path:none}
     .logobox img{max-height:46px}
     .brandtext{padding:0}
-    .brandtext h1{color:var(--navy)!important;font-size:18pt}
+    .brandtext .brandtitle{color:var(--navy)!important;font-size:18pt}
     .wrap{max-width:100%;width:100%;margin:0;padding:0}
     .card{border:none;padding:0;margin:0;box-shadow:none;background:#fff}
     #results .row.between{display:block}
@@ -362,14 +484,40 @@
     .gauge-wrap{
       justify-content:flex-start;
       gap:24px;
-      margin:8px 0 16px!important;
+      margin:8px 0 14px!important;
       page-break-inside:avoid;
       break-inside:avoid;
     }
     .gauge{width:150px;height:150px}
     .gauge svg{width:150px;height:150px}
-    .ladder{min-width:0;flex:1 1 300px}
-    .ladder .step{padding:6px 10px;font-size:10pt;margin-bottom:4px}
+    .ladder{min-width:0;flex:1 1 320px}
+    .ladder .step{padding:5px 9px;font-size:9.5pt;margin-bottom:3px}
+    .ladder .step .stepdesc{font-size:8pt;margin-top:2px}
+    .stagebox{
+      page-break-inside:avoid;
+      break-inside:avoid;
+      padding:12px 14px;
+      margin-bottom:16px;
+      border:1px solid #ddd;
+      border-left:4px solid var(--gold);
+    }
+    .stagebox h3{font-size:13pt}
+    .stagebox .stagelede{font-size:9.5pt}
+    .stagegrid{grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+    .stagegrid .cell{padding:8px 10px;border:1px solid #ddd}
+    .stagegrid .cell b{font-size:8pt}
+    .stagegrid .cell p{font-size:9pt}
+    .stagescale{
+      grid-template-columns:repeat(5,1fr);
+      gap:6px;
+      page-break-inside:avoid;
+      break-inside:avoid;
+    }
+    .stagescale li{padding:7px 8px;border:1px solid #ddd;border-top:2px solid var(--gold-light)}
+    .stagescale li b{font-size:9.5pt;margin-bottom:2px}
+    .stagescale li b em{font-size:7pt}
+    .stagescale li span{font-size:8pt;margin-bottom:3px}
+    .stagescale li p{font-size:8.5pt;line-height:1.35}
     .resultcols{display:block}
     .resultcol{
       width:100%;
@@ -427,7 +575,7 @@
     <div class="brand">
       <span class="logobox" id="logoHeader"><span class="logofallback">SMU Academy</span></span>
       <div class="brandtext">
-        <h1 id="appTitle">AI Adoption Assessment</h1>
+        <div class="brandtitle" id="appTitle">AI Adoption Assessment</div>
       </div>
     </div>
     <div class="langtoggle">
@@ -443,14 +591,22 @@
 
   <!-- INTRO -->
   <div class="card" id="intro">
-    <h2 id="introH">How ready is your organisation for AI?</h2>
+    <h2 class="pagetitle" id="introH">How ready is your organisation for AI?</h2>
     <div class="objective">
       <h3 id="objH">About this tool</h3>
       <p id="objP"></p>
     </div>
     <p class="sub" id="introSub"></p>
+
     <p class="pillarlist-label" id="pillarListLabel"></p>
-    <ul class="pillarlist" id="introPills"></ul>
+    <div class="coverage">
+      <div class="coveragegroup">
+        <p class="coveragehead" id="coverageHead"></p>
+        <ul class="pillarlist" id="introPills"></ul>
+      </div>
+      <p class="coveragetotal" id="coverageTotal"></p>
+    </div>
+
     <div class="field">
       <label id="lblIndustry"></label>
       <select id="industry" required></select>
@@ -543,6 +699,26 @@
       <div class="ladder" id="ladder"></div>
     </div>
 
+    <!-- CURRENT MATURITY STAGE DETAIL -->
+    <div class="stagebox" id="stageBox">
+      <h3 id="stageBoxH"></h3>
+      <p class="stagelede" id="stageBoxLede"></p>
+      <div class="stagegrid">
+        <div class="cell">
+          <b id="stageWhatH"></b>
+          <p id="stageWhatP"></p>
+        </div>
+        <div class="cell">
+          <b id="stageFocusH"></b>
+          <p id="stageFocusP"></p>
+        </div>
+        <div class="cell">
+          <b id="stageSuccessH"></b>
+          <p id="stageSuccessP"></p>
+        </div>
+      </div>
+    </div>
+
     <div class="resultcols">
       <div class="resultcol">
         <h2 style="font-size:17px" id="barsH"></h2>
@@ -560,6 +736,11 @@
 
     <h2 style="font-size:17px;margin-top:14px" id="ucH"></h2>
     <div class="usecases" id="usecases"></div>
+
+    <!-- FULL MATURITY SCALE REFERENCE -->
+    <h2 style="font-size:17px;margin-top:26px" id="stageScaleH"></h2>
+    <p class="sub" id="stageScaleSub"></p>
+    <ul class="stagescale" id="resultStages"></ul>
 
     <div class="ctabox">
       <h3 id="ctaH"></h3>
@@ -619,7 +800,7 @@ function renderLogo(h){
 var CTA_LINK = "https://academy.smu.edu.sg/contact-us";
 
 /* Assessment version */
-var ASSESSMENT_VERSION = "v2.6";
+var ASSESSMENT_VERSION = "v3.0";
 
 /* Power Automate endpoint — captures into SharePoint */
 var POWER_AUTOMATE_URL = "https://defaultc98a79ca5a9a4791a243f06afd6746.4d.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c13996eef56447c78f51e75b0fe540c9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=VyF84Csnx3S9W4VesCdZ8FkY6is_tUhoGLepfg__VNs";
@@ -662,8 +843,11 @@ var T = {
   introH:"How ready is your organisation for AI?",
   objH:"About this tool",
   objP:"This self-assessment helps business leaders quickly understand their organisation's readiness to adopt AI across seven core areas plus industry-specific use cases. In about 15 minutes you'll receive a readiness score, a maturity stage, and a prioritised, practical action roadmap — so you know exactly where to start and how to move forward with confidence.",
-  introSub:"A quick diagnostic across 7 core pillars plus a use-case overlay for your industry.",
+  introSub:"An 8-part diagnostic: 7 core readiness pillars that apply to every organisation, plus 1 tailored section of use-case questions chosen to match your industry.",
   pillarListLabel:"What this assessment covers",
+  coverageHead:"7 Core Readiness Pillars + Industry-Specific Use Cases",
+  industryItemLabel:"Industry-Specific Use Cases",
+  coverageTotal:function(n){ return "Total: " + n + " sections · about 15 minutes"; },
   lblIndustry:"Select your industry:",
   lblScope:"Assessing for:",
   lblCompany:"Organisation name:",
@@ -698,11 +882,19 @@ var T = {
   btnPrint:"🖨 Print / Save PDF",
   ovLbl:"Overall Readiness",
   youAreHere:"  ◀ you are here",
+  stageBoxH:function(stage,pct){ return "Your maturity stage: " + stage + " (" + pct + "%)"; },
+  stageBoxLede:function(range){ return "Organisations scoring " + range + " overall are at this stage. The guidance below outlines what this means for you and the most valuable next steps."; },
+  stageWhatH:"What this means",
+  stageFocusH:"Immediate focus (next 90 days)",
+  stageSuccessH:"Success looks like",
   barsH:"Readiness by pillar",
   radarH:"Readiness profile",
   prioH:"Your top 3 priorities",
   prioSub:"Focus here first — these are your lowest-scoring pillars.",
   ucH:"Common AI use cases for your selected industry",
+  stageScaleH:"The 5 AI adoption maturity stages",
+  stageScaleSub:"Your stage is highlighted below. Use this as a roadmap for where your organisation is heading next.",
+  yourStageTag:"Your current stage",
   ctaH:"Ready to take the next step with SMU Academy?",
   ctaP:"Turn your results into action. SMU Academy partners with organisations to build AI capability through hands-on workshops, tailored consultancy, and staff training — with pathways to relevant government support.",
   ctaItems:[
@@ -720,8 +912,11 @@ var T = {
   introH:"贵机构准备好应用人工智能了吗？",
   objH:"关于本工具",
   objP:"本自评工具帮助企业管理者快速了解贵机构在七大核心领域及行业专属应用场景方面的人工智能应用准备程度。整个评估约需15分钟，完成后您将获得准备度评分、成熟度阶段，以及一份按优先次序排列、切实可行的行动建议，让您清楚知道应从何处着手，并有信心推进下一步。",
-  introSub:"快速评估七大核心支柱，并针对贵机构所属行业提供应用场景补充问题。",
+  introSub:"本评估共分八个部分：七大核心准备度支柱（适用于所有机构），加上一个专属部分——根据贵机构所属行业量身设计的应用场景问题。",
   pillarListLabel:"本评估涵盖的范围",
+  coverageHead:"七大核心准备度支柱 + 行业专属应用场景",
+  industryItemLabel:"行业专属应用场景",
+  coverageTotal:function(n){ return "合共 " + n + " 个部分 · 约需15分钟"; },
   lblIndustry:"请选择贵机构所属行业：",
   lblScope:"评估范围：",
   lblCompany:"机构名称：",
@@ -756,11 +951,19 @@ var T = {
   btnPrint:"🖨 打印 / 保存PDF",
   ovLbl:"整体准备度",
   youAreHere:"  ◀ 当前阶段",
+  stageBoxH:function(stage,pct){ return "您的成熟度阶段：" + stage + "（" + pct + "%）"; },
+  stageBoxLede:function(range){ return "整体得分介于 " + range + " 的机构处于此阶段。以下内容说明该阶段对贵机构的意义，以及最具价值的下一步行动。"; },
+  stageWhatH:"阶段含义",
+  stageFocusH:"当前重点（未来90天）",
+  stageSuccessH:"成功的标志",
   barsH:"各支柱准备度",
   radarH:"准备度概览",
   prioH:"您的三大优先事项",
   prioSub:"建议优先处理以下范畴——这些是贵机构得分最低的支柱。",
   ucH:"贵机构所属行业的常见人工智能应用场景",
+  stageScaleH:"人工智能应用成熟度的五个阶段",
+  stageScaleSub:"贵机构当前所处的阶段已在下方标示。您可将此作为未来发展方向的路线图。",
+  yourStageTag:"贵机构当前阶段",
   ctaH:"准备好与新大专业进修学院迈出下一步了吗？",
   ctaP:"将评估结果化为行动。新大专业进修学院（SMU Academy）与各类机构携手，通过实操工作坊、量身定制的咨询以及员工培训建立人工智能能力，并协助对接相关政府支持计划。",
   ctaItems:[
@@ -786,8 +989,72 @@ var PILLARS = {
 };
 
 var STAGES = {
- en:[["Exploring",0,20],["Planning",21,40],["Implementing",41,60],["Scaling",61,80],["Realizing",81,100]],
+ en:[["Exploring",0,20],["Planning",21,40],["Implementing",41,60],["Scaling",61,80],["Realising",81,100]],
  zh:[["探索期",0,20],["规划期",21,40],["实施期",41,60],["扩展期",61,80],["价值实现期",81,100]]
+};
+
+/* =====================================================================
+   MATURITY STAGE DESCRIPTIONS
+   Source: "Executive Report Summary on AI Adoption Maturity Assessment
+   and Recommended Actions" (SMU Academy).
+   Index order matches STAGES above:
+   0 Exploring · 1 Planning · 2 Implementing · 3 Scaling · 4 Realising
+   ===================================================================== */
+var STAGE_INFO = {
+ en:[
+  {
+   what:"AI awareness exists, but adoption is largely ad hoc and experimental.",
+   focus:"Build awareness and identify 2–3 priority use cases. Establish executive sponsorship and define AI adoption objectives.",
+   success:"Clear AI vision, sponsorship and use case established."
+  },
+  {
+   what:"The organisation is preparing the foundation required for sustainable AI adoption.",
+   focus:"Establish governance, an adoption roadmap and pilots in place. Define KPIs and benefits realisation measures.",
+   success:"AI strategy approved and pilot programme ready to launch."
+  },
+  {
+   what:"AI solutions are being deployed and tested within selected teams or functions.",
+   focus:"Drive adoption and measure pilot outcomes. Collect user feedback and refine solutions.",
+   success:"Users actively leveraging AI with measurable business benefits."
+  },
+  {
+   what:"AI adoption is expanding across business units with supporting governance and processes in place.",
+   focus:"Expand adoption and institutionalise best practices. Roll out proven AI use cases across additional teams.",
+   success:"AI used consistently across multiple teams and functions."
+  },
+  {
+   what:"AI is embedded in day-to-day operations and delivering measurable business value.",
+   focus:"Optimise, innovate and maximise value. Maintain ongoing workforce upskilling and governance reviews.",
+   success:"AI delivers sustained productivity, efficiency and innovation outcomes."
+  }
+ ],
+ zh:[
+  {
+   what:"机构已具备人工智能的基本认知，但应用仍以临时性与试验性为主。",
+   focus:"提升全员认知，确定2至3个优先应用场景；争取高层支持，明确人工智能的应用目标。",
+   success:"确立清晰的人工智能愿景、高层支持，并选定首个应用场景。"
+  },
+  {
+   what:"机构正在为可持续的人工智能应用奠定必要基础。",
+   focus:"建立治理机制、应用路线图与试点项目；订立关键绩效指标（KPI）与效益衡量方式。",
+   success:"人工智能策略获得批准，试点项目已准备就绪并可启动。"
+  },
+  {
+   what:"人工智能方案正在选定的团队或职能部门中部署与测试。",
+   focus:"推动实际使用并衡量试点成效；收集用户反馈，持续优化方案。",
+   success:"用户积极运用人工智能，并带来可衡量的业务效益。"
+  },
+  {
+   what:"人工智能的应用正扩展至各业务单位，并已建立相应的治理机制与流程支持。",
+   focus:"扩大应用范围并将最佳实践制度化；将已验证的应用场景推广至更多团队。",
+   success:"多个团队与职能部门能持续一致地运用人工智能。"
+  },
+  {
+   what:"人工智能已融入日常运作，并带来可衡量的业务价值。",
+   focus:"持续优化、创新并最大化价值；保持员工技能提升与治理机制的定期检讨。",
+   success:"人工智能持续带来生产力、效率与创新成果。"
+  }
+ ]
 };
 
 var CORE = [
@@ -989,11 +1256,15 @@ var PKEYS = ["1. Business Case & Leadership","2. Use-Case Readiness","3. Data Re
 
 function stageIndex(p){
   var S = STAGES.en;
+  p = Math.round(p);
   for(var i=0;i<S.length;i++){ if(p>=S[i][1] && p<=S[i][2]) return i; }
   return 0;
 }
 function bandColor(p){
   return p<=20 ? '#D64545' : p<=40 ? '#E67E22' : p<=60 ? '#E8B800' : p<=80 ? '#7DBB4F' : '#2E9E5B';
+}
+function stageRange(i){
+  return STAGES.en[i][1] + "–" + STAGES.en[i][2] + "%";
 }
 
 /* ================= LANGUAGE APPLY ================= */
@@ -1021,6 +1292,8 @@ function applyStaticText(){
   setText('objP', t.objP);
   setText('introSub', t.introSub);
   setText('pillarListLabel', t.pillarListLabel);
+  setText('coverageHead', t.coverageHead);
+  setText('coverageTotal', t.coverageTotal(PKEYS.length));
   setText('lblIndustry', t.lblIndustry);
   setText('lblScope', t.lblScope);
   setText('lblCompany', t.lblCompany);
@@ -1044,11 +1317,16 @@ function applyStaticText(){
   setText('btnRetake', t.btnRetake);
   setText('btnPrint', t.btnPrint);
   setText('ovLbl', t.ovLbl);
+  setText('stageWhatH', t.stageWhatH);
+  setText('stageFocusH', t.stageFocusH);
+  setText('stageSuccessH', t.stageSuccessH);
   setText('barsH', t.barsH);
   setText('radarH', t.radarH);
   setText('prioH', t.prioH);
   setText('prioSub', t.prioSub);
   setText('ucH', t.ucH);
+  setText('stageScaleH', t.stageScaleH);
+  setText('stageScaleSub', t.stageScaleSub);
   setText('ctaH', t.ctaH);
   setText('ctaP', t.ctaP);
   setText('ctaBtn1', t.ctaBtn1);
@@ -1058,15 +1336,22 @@ function applyStaticText(){
   var cta = document.getElementById('ctaBtn1');
   if(cta) cta.setAttribute('href', CTA_LINK);
 
+  /* Single uniform list: pillars 1–7 plus item 8 (industry use cases) */
   var pw = document.getElementById('introPills');
   if(pw){
     pw.innerHTML = "";
-    PILLS[LANG].forEach(function(p){
+    var labels = PILLS[LANG].slice(0,7).concat([t.industryItemLabel]);
+    labels.forEach(function(p, i){
       var li = document.createElement('li');
-      li.textContent = p;
+      var num = document.createElement('span');
+      num.className = 'num';
+      num.textContent = (i+1);
+      li.appendChild(num);
+      li.appendChild(document.createTextNode(p));
       pw.appendChild(li);
     });
   }
+
   var cg = document.getElementById('ctaGrid');
   if(cg){
     cg.innerHTML = "";
@@ -1177,8 +1462,19 @@ function buildAnswersText(){
   return lines.join('\n').trim();
 }
 
+function buildStageDescriptionText(si){
+  var info = STAGE_INFO.en[si];
+  var lines = [];
+  lines.push("Stage: " + STAGES.en[si][0] + " (" + stageRange(si) + ")");
+  lines.push("What this means: " + info.what);
+  lines.push("Immediate focus (next 90 days): " + info.focus);
+  lines.push("Success looks like: " + info.success);
+  return lines.join('\n');
+}
+
 function buildResultsSummaryText(scores, overall){
-  var stage = STAGES.en[stageIndex(overall)][0];
+  var si = stageIndex(overall);
+  var stage = STAGES.en[si][0];
   var low = PKEYS.slice().sort(function(a,b){ return scores[a] - scores[b]; }).slice(0,3);
   var companyEl = document.getElementById('company');
   var company = companyEl ? companyEl.value.trim() : "";
@@ -1191,6 +1487,9 @@ function buildResultsSummaryText(scores, overall){
   lines.push("Date: " + new Date().toLocaleDateString('en-GB'));
   lines.push("");
   lines.push("Overall readiness: " + overall + "% (" + stage + ")");
+  lines.push("");
+  lines.push("YOUR MATURITY STAGE");
+  lines.push(buildStageDescriptionText(si));
   lines.push("");
   lines.push("READINESS BY PILLAR");
   lines.push(buildScoresText(scores));
@@ -1223,6 +1522,7 @@ function submitAssessmentToSharePoint(){
 
   var computed = computeScores();
   var scores = computed.scores, overall = computed.overall;
+  var si = stageIndex(overall);
   var company = document.getElementById('company').value.trim();
   var marketingConsent = document.getElementById('marketingConsent').checked;
 
@@ -1250,7 +1550,14 @@ function submitAssessmentToSharePoint(){
     scopeLabel: scopeLabel(),
     language: LANG,
     overallScore: overall,
-    maturityStage: STAGES.en[stageIndex(overall)][0],
+    maturityStage: STAGES.en[si][0],
+    maturityStageRange: stageRange(si),
+    stageDescription: {
+      whatThisMeans: STAGE_INFO.en[si].what,
+      immediateFocus90Days: STAGE_INFO.en[si].focus,
+      successLooksLike: STAGE_INFO.en[si].success
+    },
+    stageDescriptionText: buildStageDescriptionText(si),
     scores: scores,
     answers: answersJSON,
     scoresText: buildScoresText(scores),
@@ -1516,6 +1823,7 @@ function showResults(keepScroll){
     os.style.color = bandColor(overall);
   }
 
+  /* ---- Stage ladder with short descriptions ---- */
   var ld = document.getElementById('ladder');
   if(ld){
     ld.innerHTML = "";
@@ -1524,13 +1832,61 @@ function showResults(keepScroll){
       var act = (i === si);
       var d = document.createElement('div');
       d.className = 'step' + (act ? ' active' : '');
+
+      var top = document.createElement('div');
+      top.className = 'steptop';
       var left = document.createElement('span');
       left.textContent = n + (act ? t.youAreHere : '');
       var right = document.createElement('span');
       right.textContent = a + "–" + b + "%";
-      d.appendChild(left);
-      d.appendChild(right);
+      top.appendChild(left);
+      top.appendChild(right);
+
+      var desc = document.createElement('div');
+      desc.className = 'stepdesc';
+      desc.textContent = STAGE_INFO[LANG][i].what;
+
+      d.appendChild(top);
+      d.appendChild(desc);
       ld.appendChild(d);
+    });
+  }
+
+  /* ---- Current stage detail panel ---- */
+  var info = STAGE_INFO[LANG][si];
+  var sb = document.getElementById('stageBox');
+  if(sb) sb.style.borderLeftColor = bandColor(overall);
+  setText('stageBoxH', t.stageBoxH(STAGES[LANG][si][0], overall));
+  setText('stageBoxLede', t.stageBoxLede(STAGES[LANG][si][1] + "–" + STAGES[LANG][si][2] + "%"));
+  setText('stageWhatH', t.stageWhatH);
+  setText('stageFocusH', t.stageFocusH);
+  setText('stageSuccessH', t.stageSuccessH);
+  setText('stageWhatP', info.what);
+  setText('stageFocusP', info.focus);
+  setText('stageSuccessP', info.success);
+
+  /* ---- Full 5-stage reference scale (results page only) ---- */
+  var rs = document.getElementById('resultStages');
+  if(rs){
+    rs.innerHTML = "";
+    STAGES[LANG].forEach(function(row, i){
+      var li = document.createElement('li');
+      if(i === si) li.className = 'current';
+      var b = document.createElement('b');
+      b.appendChild(document.createTextNode(row[0]));
+      if(i === si){
+        var em = document.createElement('em');
+        em.textContent = t.yourStageTag;
+        b.appendChild(em);
+      }
+      var sp = document.createElement('span');
+      sp.textContent = row[1] + "–" + row[2] + "%";
+      var p = document.createElement('p');
+      p.textContent = STAGE_INFO[LANG][i].what;
+      li.appendChild(b);
+      li.appendChild(sp);
+      li.appendChild(p);
+      rs.appendChild(li);
     });
   }
 
